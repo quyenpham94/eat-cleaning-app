@@ -1,8 +1,8 @@
 # eat-cleaning-app
 
 This project take the information from the Spoonacular API (https://spoonacular.com/)
-**
-Project Proposal**
+
+Project Proposal
 
 Goal:
 The website will be designed to achieve a healthy diet for everyone. It is inspired by the idea of clean eating. Clean eating is traditionally defined as eating simple, whole foods without  any artificial ingredients (eliminate processed foods, trans fats, heavy saturated fats, added sugar, and refined grains). Thus, the website will help users calculate the calories, trans fats and added sugar so that they can control the nutrition they eat every meal.
