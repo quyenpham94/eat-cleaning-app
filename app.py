@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, session, flash
-from models import connect_db, db, User
+from models import connect_db, db, User, Meal
 from sqlalchemy.exc import IntegrityError
-from forms import UserForm, LoginForm
+from forms import UserForm, LoginForm, MealForm
 
 app = Flask(__name__)
 
@@ -39,7 +39,7 @@ def register_user():
 
         session['user_id'] = new_user.id
         flash('Welcome! Succesfully Created Your Account! ', "success")
-        return redirect('/')
+        return redirect('/meals')
     
     return render_template('register.html', form=form)
 
@@ -55,7 +55,7 @@ def login_user():
         if user: 
             flash(f"Welcome back, {user.username}! ", "primary")
             session['user_id'] = user.id
-            return redirect('/')
+            return redirect('/meals')
         else:
             form.username.errors = ["Invalid username/password."]
 
@@ -66,3 +66,23 @@ def logout_user():
     session.pop('user_id')
     flash("Goodbye, see you next meal!", "info")
     return redirect('/')
+
+
+@app.route('/meals', methods=["GET", "POST"])
+def meal_page():
+    if "user_id" not in session:
+        flash("Please login first!", "danger")
+        return redirect('/')
+    
+    form = MealForm()
+    all_ingredients = Meal.query.all()
+    
+    if form.validate_on_submit():
+        ingredient = form.ingredient.data
+        new_meal = Meal(ingredient=ingredient, user_id=session['user_id'])
+        db.session.add(new_meal)
+        db.session.commit()
+        flash('Ingredient Added!', 'success')
+        return redirect('/meals')
+
+    return render_template("meals.html")

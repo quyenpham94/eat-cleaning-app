@@ -35,7 +35,7 @@ class User(db.Model):
                     email=email, 
                     password=hashed_utf8)
         #return instance of user with username and hashed pwd
-        # return cls(username=username, password=hashed_utf8)
+      
         db.session.add(user)
         return user
 
@@ -51,3 +51,12 @@ class User(db.Model):
         else:
             return False
 
+class Meal(db.Model):
+
+    __tablename__ = "meals"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    ingredient = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    user = db.relationship('User', backref='meals')
