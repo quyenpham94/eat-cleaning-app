@@ -77,6 +77,8 @@ def meal_page():
     form = MealForm()
     all_ingredients = Meal.query.all()
     
+    # query = request.args.get('ingredient',"")
+
     if form.validate_on_submit():
         ingredient = form.ingredient.data
         new_meal = Meal(ingredient=ingredient, user_id=session['user_id'])
@@ -85,4 +87,4 @@ def meal_page():
         flash('Ingredient Added!', 'success')
         return redirect('/meals')
 
-    return render_template("meals.html")
+    return render_template("meals.html", form=form, ingredients=all_ingredients)
