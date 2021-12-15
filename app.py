@@ -18,7 +18,7 @@ app.config['SQLALCHEMY_ECHO'] = False
 
 
 BASE_URL = "https://api.spoonacular.com/"
-API_KEY = "7661a2feb8364ca09a645444d3ed9189"
+API_KEY = "05e1a156897a47dc8cd89c258a0c35c8"
 
 
 connect_db(app)
@@ -158,21 +158,23 @@ def search_ingredient():
     # diet = request.args.get('diet', "")
     # offset = request.args.get('offset')
     # number = 8
-    query = request.args.get('ingredient',"")
-    if request.args:       
-        res = requests.get(f"{BASE_URL}/food/ingredients/search", params={ "apiKey": API_KEY, "query":query, "number":2, "sort":calories,"sortDirection":desc})
-        data = res.json()
-        return data
+    
+    
+    query = request.args.get('query',"")
+  
+    res = requests.get(f"{BASE_URL}/food/ingredients/search", params={ "apiKey": API_KEY, "query":query})
+    data = res.json()
+    
    
     if data.get('result') == 0:
         flash("Sorry, search limit reached!", "warning")
         render_template("/index.html")
     
-    path = f"/search?query={query}&cuisine={cuisine}&diet={diet}"
+    # path = f"/search?query={query}&cuisine={cuisine}&diet={diet}"
     ingredients = data['results']
     if g.user:
-        ingredient_ids = [r.id for r in g.user.ingredients]
+        ingredient_ids = [r['id'] for r in ingredients]
     else:
         ingredient_ids = []
     ### add favorite function here
-    return render_template("/foods/ingredients.html", ingredients=ingredients, ingredient_ids=ingredient_ids, url=path)
+    return render_template("/foods/search.html", ingredients=ingredients, ingredient_ids=ingredient_ids)

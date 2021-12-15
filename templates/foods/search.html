@@ -1,9 +1,67 @@
 {% extends 'base.html' %}
-{% block title %}Search{% endblock %}
+{% block title %}Search Ingredient{% endblock %}
 
 {% block content %}
 <h1>Search Ingredient </h1>
 
-<form>
-    <button type="submit">add ingredient</button>
-</form>
+<div class="container">
+    <form autocomplete='off' method="GET">
+        <div class="autocomplete suggestions">
+            
+            <input data-autocomplete list="food-suggestion" class="form-control" type="text" name="query" placeholder="Search Ingredient">
+
+            <button class="btn btn-outline-success" type="submit" value="find">Search</button>
+            <form class="add-food" type="submit">
+                <select id="food-suggestion">
+                    {% for ingredient in ingredients %}
+                        <option>
+                            <div>
+                                <div class="card my-4">
+                                    <div class="card-body">
+                                        
+                                            <p class="card-text">
+                                                <ul>{{ ingredient.name }}</ul>
+                                            </p>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </option>
+                       
+                    
+                    {% endfor %}
+                    
+                </select>
+                <button class="add-food">ADD</button>
+            </form>
+        </div>
+    </form>
+</div>
+    <div class="today-meal border-0">
+        <h5 class="card-title text-info">Today's Meal</h5>
+        <div id="food-list">
+
+        </div>
+    </div>
+    
+</div>
+    <div class="container">
+        <a href="/" class="btn btn-outline btn-lg">Home</a>
+    </div>
+
+<script>
+    $(function(){
+        $(".add-food").on("click", function(event){
+            event.preventDefault();
+            new_ul = document.createElement("ul");
+            // ("#food-list").append(new_ul);
+            let food = $(".card-text").val();
+            console.log(food);
+            $(new_ul).append(food);
+        })
+    })
+
+</script>
+{% endblock %}
+
+
