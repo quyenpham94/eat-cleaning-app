@@ -42,11 +42,7 @@ def do_logout():
 
 ########## signup, login, logout ################
 
-@app.route('/')
-def home_page():
-    """Home page."""
-    
-    return render_template('index.html', user=user)
+
 
 
 @app.route('/register', methods=['GET','POST'])
@@ -129,34 +125,54 @@ def update_profile(user_id):
         return redirect(f"/users/{user.id}")
         
     return render_template('users/edit.html', form=form, user_id=user.id)
-################### eat-cleaning-function #############
 
-# @app.route('/meals')
-# def meal_page():
-#     if "user_id" not in session:
-#         flash("Please login first!", "danger")
-#         return redirect('/')
-#     formuser = UserForm()
-#     form = MealForm()
-#     query = request.args.get('query', "")
-#     cuisine = request.args.get('cuisine', "")
-#     diet = request.args.get('diet', "")
-#     offset = request.args.get('offset')
-#     number = 8
-#     all_ingredients = Meal.query.all()
-#     if request.args:
-        
-#         res = requests.get(f"{BASE_URL}/recipes/complexSearch", params ={ "apiKey": API_KEY, "diet": diet, "cuisine": cuisine, "query": query, "number": number, "offset": offset })
-#         data = res.json()
-#         if data['results'] == '0':
-#             flash("Sorry, search limit reached", "warning")
-#             return render_template('meals.html', form=form)
-#         else:
-#             ingredients = get_ingredients_from_api_response(data)
-#             return render_template('meals.html', form=form, ingredients=ingredients)
-#     try:
-#         transaction.commit()
-#     except e:
-#         session.rollback()
-#         print str(e)
-#     return redirect('/meals')
+@app.route("/users/<int:user_id>/delete", methods=["POST"])
+def delete_user(user_id):
+    """Delete user."""
+
+    if not g.user:
+        flash("Access unauthorized.","danger")
+        return redirect("/")
+    
+    user = User.query.get_or_404(user_id)
+
+    db.session.delete(user)
+    db.session.commit()
+    session.pop(CURR_USER_KEY)
+    flash(f"{g.user.username}'s account has been deleted!", 'secondary')
+    return redirect('/')
+
+
+
+################### eat-cleaning-function #############
+@app.route('/')
+def home_page():
+    """Home page."""
+    
+    return render_template('index.html')
+
+@app.route("/search")
+def search_ingredient():
+    # query = request.args.get('query', "")
+    # cuisine = request.args.get('cuisine', "")
+    # diet = request.args.get('diet', "")
+    # offset = request.args.get('offset')
+    # number = 8
+    query = request.args.get('ingredient',"")
+    if request.args:       
+        res = requests.get(f"{BASE_URL}/food/ingredients/search", params={ "apiKey": API_KEY, "query":query, "number":2, "sort":calories,"sortDirection":desc})
+        data = res.json()
+        return data
+   
+    if data.get('result') == 0:
+        flash("Sorry, search limit reached!", "warning")
+        render_template("/index.html")
+    
+    path = f"/search?query={query}&cuisine={cuisine}&diet={diet}"
+    ingredients = data['results']
+    if g.user:
+        ingredient_ids = [r.id for r in g.user.ingredients]
+    else:
+        ingredient_ids = []
+    ### add favorite function here
+    return render_template("/foods/ingredients.html", ingredients=ingredients, ingredient_ids=ingredient_ids, url=path)

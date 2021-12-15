@@ -24,10 +24,10 @@ class User(db.Model):
     email = db.Column(db.Text, nullable=False, unique=True)
 
     @classmethod 
-    def register(cls, username, email, pwd):
+    def register(cls, username, email, password):
         """Register user with hashed password and return here."""
 
-        hashed = bcrypt.generate_password_hash(pwd)
+        hashed = bcrypt.generate_password_hash(password)
         # turn bytestring into normal (unicode utf8) string
         hashed_utf8 = hashed.decode("utf8")
 
