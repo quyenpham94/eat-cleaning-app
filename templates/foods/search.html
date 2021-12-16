@@ -4,36 +4,38 @@
 {% block content %}
 <h1>Search Ingredient </h1>
 
-<div class="container">
+<div class="container" id="search" >
     <form autocomplete='off' method="GET">
         <div class="autocomplete suggestions">
-            
+
             <input data-autocomplete list="food-suggestion" class="form-control" type="text" name="query" placeholder="Search Ingredient">
 
             <button class="btn btn-outline-success" type="submit" value="find">Search</button>
             <form class="add-food" type="submit">
-                <select id="food-suggestion">
-                    {% for ingredient in ingredients %}
-                        <option>
-                            <div>
-                                <div class="card my-4">
-                                    <div class="card-body">
+                {% for ingredient in ingredients %}
+
+                <div>
+                    <div class="card my-4">
+                        <div class="card-body">
+                                <form method="POST" type="submit">
+                                    <div class="card-text">
+                                        <ul class="ingredient-name">{{ ingredient.name }}
                                         
-                                            <p class="card-text">
-                                                <ul>{{ ingredient.name }}</ul>
-                                            </p>
-                                        
+                                        </ul>
+                                        <button class="btn btn-outline-success" type="submit" id="add-food">pick</button>
                                     </div>
-                                </div>
-                            </div>
-                        </option>
-                       
-                    
-                    {% endfor %}
-                    
-                </select>
-                <button class="add-food">ADD</button>
+
+                                </form>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+                {% endfor %}
             </form>
+
         </div>
     </form>
 </div>
@@ -43,25 +45,30 @@
 
         </div>
     </div>
-    
+
 </div>
     <div class="container">
         <a href="/" class="btn btn-outline btn-lg">Home</a>
     </div>
-
-<script>
+<script type="text/javascript">
     $(function(){
-        $(".add-food").on("click", function(event){
+        $(".card-body").click(function(event){
             event.preventDefault();
-            new_ul = document.createElement("ul");
-            // ("#food-list").append(new_ul);
-            let food = $(".card-text").val();
+            var food = $(".ingredient-name").text();
             console.log(food);
-            $(new_ul).append(food);
+            new_ul = document.createElement("ul");
+            $("#food-list").append(new_ul);
+            $("ul").append(food);
         })
+        // $("#search").click(function(event){
+        //     event.preventDefault();
+
+        // })
     })
 
+
 </script>
+ <!-- <script src="/static/app.js"></script>  -->
 {% endblock %}
 
 
