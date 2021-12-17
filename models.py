@@ -12,16 +12,28 @@ def connect_db(app):
     db.init_app(app)
 
 class User(db.Model):
+    """User in the system."""
 
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-
     username = db.Column(db.Text, nullable=False, unique=True)
-
     password = db.Column(db.Text, nullable=False)
-
     email = db.Column(db.Text, nullable=False, unique=True)
+
+    meals = db.relationship('Meal')
+
+    @classmethod
+    def serialize(self):
+        """Serialize User instance for JSON"""
+        return {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email
+        }
+
+    def __repr__(self):
+        return f'<User #{seld.id}: {self.username}, {self.email}'
 
     @classmethod 
     def register(cls, username, email, password):
@@ -51,12 +63,38 @@ class User(db.Model):
         else:
             return False
 
-class Meal(db.Model):
+class Ingredient(db.Model):
 
-    __tablename__ = "meals"
+    __tablename__ = "ingredients"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    ingredient = db.Column(db.Text, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    name = db.Column(db.String, nullable=False)
+   
+    users = db.relationship('User', secondary="meals", backref='ingredients', lazy=True)
 
-    user = db.relationship('User', backref='meals')
+    meals = db.relationship('Meal')
+
+    @property
+    def ingredient_name(self):
+        return f'{self.name}'
+
+    def serialize(self):
+        """Return a dict representatio of ingredients which we can turn into JSON."""
+        return {
+            'id': self.id,
+            'name': self.name
+        }
+    def __repr__(self):
+        return f'<Ingredient = id:{self.id}, name:{self.name}'
+
+class Meal(db.Model):
+    """Create a meal for each user."""
+
+    __tablename__ = "meals"
+    
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='cascade'), primary_key=True)
+    ingredient_id = db.Column(db.Integer, db.ForeignKey('ingredients.id', ondelete='cascade'), primary_key=True)
+
+    def __repr__(self):
+        return f'<Meal=user_id:{self.user_id} ingredient_id:{self.ingredient_id}>'

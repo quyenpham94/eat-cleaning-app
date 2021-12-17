@@ -3,43 +3,25 @@
 {% block content %}
 <h1>Your Meal</h1>
 
-<form method="POST">
-    {{ form.hidden_tag() }}
-
-    {% for field in form 
-        if field.widget.input_type != 'hidden' %}
-    <p>
-        {{ field.label }}
-        {{ field(class_="form-control") }}
-
-        {% for error in field.errors %}
-        <span class="form-text text-danger">{{ error }}</span>
-        
-        {% endfor %}
-       
-    </p>
-    {% endfor %}
-
-    <button class="btn btn-sucess" type="submit">Add Ingredient</button>
-</form>
-
-<ul> 
-    {% for ingredient in ingredients %}
-    <div>
-        <div class="card my-4">
-            <div class="card-body">
-                <h5 class="card-title text-info">{{ ingredient.ingredient }}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">Calories: </h6>
-            </div>
+<div class="container">
+    {% if g.user.ingredients %}
+    <div id="ingredient-info" class="row justify-content-center align-items-center" data-id="{{ingredient.id}}">
+        <h1>eat</h1>
+        <ul>
+            {{g.user.ingredients}}
+        </ul>>
+        <!-- calculate calories here -->
+    </div>
+    {% else %}
+    <div class="jumbotron my-4">
+        <div class="container">
+            <h1 class="display-4 text-danger text-center">Sorry, you have not had any thing in your meal!
+                <a href="/search" class="neon btn btn-outline-warning btn-lg">Back</a>
+            </h1>
         </div>
     </div>
-    
-    {% endfor %}
-    <div>
-        <h6>Total Calories: </h6>
-    </div>
-</ul>
-
+</div>
+    {% endif %}
 {% endblock %}
 
 

@@ -1,11 +1,16 @@
-def get_ingredients_from_api_response(data):
-    results = data['results']
-    ingredients = []
+def add_ingredients_from_api_response(data):
+    """Add ingredients to the meal."""
 
-    for result in results:
-        ingredient = {
-            'id': results['id'],
-            'title': results['title']
-        }
-        ingredients.append(ingredient)
-    return ingredients
+    id = ingredient.get('id', None)
+    name = ingredient.get('name', None)
+
+    meal = Ingredient(id=id, name=name)
+    try:
+        db.session.add(meal)
+        db.session.commit()
+
+    except Exception:
+        db.session.rollback()
+        print("Exception", str(Exception))
+        return "Sorry, Error, Please try again later", str(Exception)
+    return meal

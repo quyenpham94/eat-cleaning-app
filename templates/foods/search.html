@@ -18,12 +18,18 @@
             <div>
                 <div class="card my-4">
                     <div class="card-body">
-                        <form method="POST" type="submit">
+                        <form method="POST" type="submit" href="/meals" name="ingredient-name">
                             <div class="card-text">
+                                {% if g.user %}
                                 <p class="ingredient-name">{{ ingredient.name }}
                                     
                                 </p>
-                                <button class="btn btn-outline-success" type="submit" id="add-food">pick</button>
+                                <a href="/meals">
+                                    <button class="btn btn-outline-success" type="button" id="add-food" data-id="{{ingredient.id}}">
+                                        <i class="{% if ingredient.id in ingredient_ids %} fas fa-heart fa-2x {% else %} far fa-heart fa-2x {% endif %}"></i></button>
+                                </a>
+                               
+                                {% endif %}
                             </div>
 
                         </form>
@@ -48,7 +54,9 @@
 
     </div>
 </div>
-
+<div class="container">
+    <a href="/meals" class="btn btn-outline btn-lg">Your Meal</a>
+</div>
 <div class="container">
     <a href="/" class="btn btn-outline btn-lg">Home</a>
 </div>
@@ -69,12 +77,38 @@
     })
     $(function(){
          $("#search").click(function(event){
-            
+         
 
         })
     })
 
 
+
+       
+    // })
+    // $(function(){
+    //      $("#search").click(function(event){
+            
+
+    //     })
+    // })
+
+    // const form = document.querySelector('.search')
+    // const input = document.querySelector('.form-control')
+    // const card = document.querySelector('.card')
+
+    // card.addEventListener('click', function(e){
+        
+    // })
+    // form.addEventListener('submit', function(event){
+    //     event.preventDefault();
+    //     const new_ul = document.createElement("ul");
+    //     let food_list = document.querySelector("#food-list");
+    //     food_list.appendChild(new_ul);
+    //     var ingredient = document.querySelector(".ingredient-name");
+    //     new_ul.appendChild(ingredient);
+
+    // })
 </script>
  <!-- <script src="/static/app.js"></script>  -->
 {% endblock %}

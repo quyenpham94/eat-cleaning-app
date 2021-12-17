@@ -15,11 +15,8 @@ class LoginForm(FlaskForm):
     username = StringField("Username", validators=[DataRequired()])
     password = PasswordField("Password", validators=[Length(min=6)])
 
-class MealForm(FlaskForm):
-    ingredient = StringField("Ingredient", validators=[DataRequired()])
-
 class UserEditForm(FlaskForm):
     """Edit User Account Form."""
-    
+
     username = StringField("Username", validators=[DataRequired()])
     email = StringField("Email", validators=[DataRequired(), Email()])

@@ -1,10 +1,10 @@
 import os
 from flask import Flask, render_template, redirect, session, flash, request, jsonify, g
-from models import connect_db, db, User, Meal
+from models import connect_db, db, User, Ingredient, Meal
 from sqlalchemy.exc import IntegrityError
-from forms import UserForm, LoginForm, MealForm, UserEditForm
+from forms import UserForm, LoginForm, UserEditForm
 import requests
-from helpers import get_ingredients_from_api_response
+from helpers import add_ingredients_from_api_response
 
 CURR_USER_KEY = "user_id"
  
@@ -18,7 +18,7 @@ app.config['SQLALCHEMY_ECHO'] = False
 
 
 BASE_URL = "https://api.spoonacular.com/"
-API_KEY = ""
+API_KEY = "bb84fdf16255463e9e710e846b8781a5"
 
 
 connect_db(app)
@@ -159,7 +159,6 @@ def search_ingredient():
     # offset = request.args.get('offset')
     # number = 8
     
-    
     query = request.args.get('query',"")
   
     res = requests.get(f"{BASE_URL}/food/ingredients/search", params={ "apiKey": API_KEY, "query":query})
@@ -176,5 +175,63 @@ def search_ingredient():
         ingredient_ids = [r['id'] for r in ingredients]
     else:
         ingredient_ids = []
+
+    meals = [m['id'] for m in ingredients if m['id'] in ingredient_ids]
+
     ### add favorite function here
-    return render_template("/foods/search.html", ingredients=ingredients, ingredient_ids=ingredient_ids)
+    return render_template("/foods/search.html", ingredients=ingredients, ingredient_ids=ingredient_ids, meals=meals)
+
+
+
+@app.route("/meals")
+def meal_page():
+    """Show User's meal."""
+    if not g.user:
+        flash('You must be logged in first','danger')
+        return redirect("/login")
+
+    ingredient_ids = [r['id'] for r in g.user.ingredients]
+
+    return render_template("/foods/meals.html", ingredient_ids=ingredient_ids)
+
+@app.route("/api/meals/<int:id>", methods=["POST"])
+def add_meal(id):
+    """Add to meals."""
+    if not g.user:
+        flash("Access unauthorized", "danger")
+        return redirect("/")
+
+    ingredient = Ingredient.query.filter_by(id=id).first()
+    if not ingredient:
+        res = requests.get(f"{BASE_URL}/food/ingredients/{id}/information", params={ "apiKey": API_KEY })
+        data = res.json()
+        ingredient = add_ingredients_from_api_response(data)
+
+        g.user.ingredients.append(ingredient)
+        db.session.commit()
+    else:
+        g.user.ingredients.append(ingredient)
+        db.session.commit()
+
+    return jsonify(ingredient=ingredient.serialize())
+
+
+
+
+
+
+@app.errorhandler(404)
+def error_page(error):
+    """Show 404 ERROR page if page NOT FOUND"""
+    return render_template("error.html"), 404
+
+
+@app.after_request
+def add_header(req):
+    """Add non-caching headers on every request."""
+
+    req.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    req.headers["Pragma"] = "no-cache"
+    req.headers["Expires"] = "0"
+    req.headers["Cache-Control"] = "public, max-age=0"
+    return req
