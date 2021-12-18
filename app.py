@@ -4,7 +4,7 @@ from models import connect_db, db, User, Ingredient, Meal
 from sqlalchemy.exc import IntegrityError
 from forms import UserForm, LoginForm, UserEditForm
 import requests
-from helpers import add_ingredients_from_api_response
+from helper import do_logout, add_ingredients_from_api_response
 
 CURR_USER_KEY = "user_id"
  
@@ -12,13 +12,13 @@ app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', "postgresql:///eat_clean_user")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = 'fvkhghi265grfgef5'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'is a secret')
 app.config['SQLALCHEMY_ECHO'] = False
 
 
 
 BASE_URL = "https://api.spoonacular.com/"
-API_KEY = "bb84fdf16255463e9e710e846b8781a5"
+API_KEY = ""
 
 
 connect_db(app)
@@ -194,7 +194,7 @@ def meal_page():
 
     return render_template("/foods/meals.html", ingredient_ids=ingredient_ids)
 
-@app.route("/api/meals/<int:id>", methods=["POST"])
+@app.route("/api/meal/<int:id>", methods=["POST"])
 def add_meal(id):
     """Add to meals."""
     if not g.user:
@@ -205,6 +205,7 @@ def add_meal(id):
     if not ingredient:
         res = requests.get(f"{BASE_URL}/food/ingredients/{id}/information", params={ "apiKey": API_KEY })
         data = res.json()
+        print(data)
         ingredient = add_ingredients_from_api_response(data)
 
         g.user.ingredients.append(ingredient)
@@ -217,6 +218,22 @@ def add_meal(id):
 
 
 
+# def add_ingredients_from_api_response(ingredient):
+#     """Add ingredients to the meal."""
+
+#     id = ingredient.get('id', None)
+#     name = ingredient.get('name', None)
+
+#     meal = Ingredient(id=id, name=name)
+#     try:
+#         db.session.add(meal)
+#         db.session.commit()
+
+#     except Exception:
+#         db.session.rollback()
+#         print("Exception", str(Exception))
+#         return "Sorry, Error, Please try again later", str(Exception)
+#     return meal
 
 
 
@@ -235,3 +252,6 @@ def add_header(req):
     req.headers["Expires"] = "0"
     req.headers["Cache-Control"] = "public, max-age=0"
     return req
+
+if __name__ == '__main__':
+    app.run()

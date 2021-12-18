@@ -33,7 +33,7 @@ class User(db.Model):
         }
 
     def __repr__(self):
-        return f'<User #{seld.id}: {self.username}, {self.email}'
+        return f'<User #{self.id}: {self.username}, {self.email}'
 
     @classmethod 
     def register(cls, username, email, password):
@@ -55,7 +55,7 @@ class User(db.Model):
     def authenticate(cls, username, pwd):
         """Validate that user exists and password is correct. Return user if valid; else return false."""
 
-        u = User.query.filter_by(username=username).first()
+        u = cls.query.filter_by(username=username).first()
 
         if u and bcrypt.check_password_hash(u.password, pwd):
             # return user instance
@@ -84,6 +84,7 @@ class Ingredient(db.Model):
             'id': self.id,
             'name': self.name
         }
+        
     def __repr__(self):
         return f'<Ingredient = id:{self.id}, name:{self.name}'
 
