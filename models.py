@@ -23,6 +23,8 @@ class User(db.Model):
 
     meals = db.relationship('Meal')
 
+    favorites = db.relationship('Favorite')
+
     @classmethod
     def serialize(self):
         """Serialize User instance for JSON"""
@@ -84,7 +86,7 @@ class Ingredient(db.Model):
             'id': self.id,
             'name': self.name
         }
-        
+
     def __repr__(self):
         return f'<Ingredient = id:{self.id}, name:{self.name}'
 
@@ -99,3 +101,73 @@ class Meal(db.Model):
 
     def __repr__(self):
         return f'<Meal=user_id:{self.user_id} ingredient_id:{self.ingredient_id}>'
+
+class Recipe(db.Model):
+    __tablename__ = 'recipes' 
+
+    id = db.Column(
+         db.Integer,
+         primary_key=True)
+    
+    title = db.Column(
+            db.String,
+            nullable=False)
+   
+    image = db.Column(
+            db.String, 
+            nullable=False)
+    
+    readyInMinutes = db.Column(
+                     db.Integer)
+
+    servings = db.Column(
+               db.Integer)
+
+    sourceName = db.Column(
+                 db.String)
+
+    sourceUrl = db.Column(
+                db.String)
+
+    users = db.relationship('User',
+                            secondary='favorites',
+                            backref='recipes', 
+                            lazy=True)
+
+    favorites = db.relationship('Favorite')
+
+    @property
+    def recipe_name(self):
+       return f'{self.title}'
+
+    def serialize(self):
+        """Returns a dict representation of recipes which we can turn into JSON"""
+        return {
+            'id': self.id,
+            'title': self.title,
+            'img_url': self.image,
+            'prep_time': self.readyInMinutes,
+            'serves': self.servings,
+            'source_name': self.sourceName,
+            'source_url': self.sourceUrl
+        }
+
+    def __repr__(self):
+        return f'<Recipe = id:{self.id}, title:{self.title}, source_name:{self.sourceName}>'
+
+class Favorite(db.Model):
+    """ Many to Many Users to Recipes """
+    __tablename__ = "favorites"
+
+    id = db.Column(db.Integer, 
+                   primary_key=True, 
+                   autoincrement=True)
+    user_id = db.Column(db.Integer,
+                        db.ForeignKey('users.id', ondelete='cascade'), 
+                        primary_key=True)
+    recipe_id = db.Column(db.Integer, 
+                          db.ForeignKey('recipes.id', ondelete='cascade'),
+                          primary_key=True)
+
+    def __repr__(self):
+        return f'<Favorite= user_id:{self.user_id} recipe_id:{self.recipe_id}>'

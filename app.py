@@ -1,10 +1,10 @@
 import os
 from flask import Flask, render_template, redirect, session, flash, request, jsonify, g
-from models import connect_db, db, User, Ingredient, Meal
+from models import connect_db, db, User, Ingredient, Meal, Recipe
 from sqlalchemy.exc import IntegrityError
 from forms import UserForm, LoginForm, UserEditForm
 import requests
-from helper import do_logout, add_ingredients_from_api_response
+from helper import do_logout, add_ingredients_from_api_response, add_recipe_from_api_response
 
 CURR_USER_KEY = "user_id"
  
@@ -18,7 +18,7 @@ app.config['SQLALCHEMY_ECHO'] = False
 
 
 BASE_URL = "https://api.spoonacular.com/"
-API_KEY = ""
+API_KEY = "bb84fdf16255463e9e710e846b8781a5"
 
 
 connect_db(app)
@@ -235,7 +235,96 @@ def add_meal(id):
 #         return "Sorry, Error, Please try again later", str(Exception)
 #     return meal
 
+@app.route("/random")
+def show_recipes():
+    """Show random recipes auto populated"""
+    res = requests.get(f"{BASE_URL}/recipes/random", params={ "apiKey": API_KEY, "number": 8 })
+    data = res.json()
+   
+    if data.get('recipes') == 0:
+        flash("Sorry, search limit reached!", "warning")
+        return render_template("index.html")
+    recipes = data['recipes']
 
+    if g.user:
+        recipe_ids = [r['id'] for r in g.user.recipes]
+    else:
+        recipe_ids = []
+    favorites = [f['id'] for f in recipes if f['id'] in recipe_ids]
+    return render_template("/foods/random.html", recipes=recipes, recipe_ids=recipe_ids, favorites=favorites)
+
+
+@app.route("/find")
+def search_recipe():
+    """Inside random recipes show refine search by diets and cuisines"""
+    query = request.args.get('query', "")
+    cuisine = request.args.get('cuisine', "")
+    diet = request.args.get('diet', "")
+    offset = request.args.get('offset')
+    number = 8
+   
+   
+    res = requests.get(f"{BASE_URL}/recipes/complexSearch", params={ "apiKey": API_KEY, "diet": diet, "cuisine": cuisine, "query": query, "number": number, "offset": offset })
+    data = res.json()
+   
+    if data.get('result') == 0:
+        flash("Sorry, search limit reached!", "warning")
+        render_template("/foods/random.html")
+    
+    path = f"/find?query={query}&cuisine={cuisine}&diet={diet}"
+    recipes = data['results']
+    if g.user:
+        recipe_ids = [r.id for r in g.user.recipes]
+    else:
+        recipe_ids = []
+    favorites = [f['id'] for f in recipes if f['id'] in recipe_ids]
+    return render_template("/foods/recipes.html", recipes=recipes, recipe_ids=recipe_ids, favorites=favorites, url=path, offset=offset)
+
+
+
+
+@app.route("/recipes/<int:id>")
+def show_recipe(id):
+    res = requests.get(f"{BASE_URL}/recipes/{id}/information", params={ "apiKey": API_KEY, "includeNutrition": False })
+    data = res.json()
+    return render_template("foods/details.html", recipes=data)
+
+# ----------------------------------------
+
+@app.route("/favorites")
+def show_favorites():
+    if not g.user:
+        flash("You must be logged in to view favorites", "danger")
+        return redirect("/login")
+    
+    user_res = g.user.recipes
+    recipe_ids = [r.id for r in user_res]
+
+    return render_template("foods/favorites.html", recipe_ids=recipe_ids)
+
+
+
+@app.route("/api/favorite/<int:id>", methods=["POST"])
+def aad_favorite(id):
+    """Add to favorites"""
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    recipe = Recipe.query.filter_by(id=id).first()
+    if not recipe:
+        res = requests.get(f"{BASE_URL}/recipes/{id}/information", params={ "apiKey": API_KEY, "includeNutrition": False })
+        data = res.json()
+        recipe = add_recipe_from_api_response(data)
+
+        g.user.recipes.append(recipe)
+        db.session.commit()
+    else:
+        g.user.recipes.append(recipe)
+        db.session.commit()
+        
+    # flash("You add recipe to favorite!", "sucsess")
+    return jsonify(recipe=recipe.serialize())
 
 @app.errorhandler(404)
 def error_page(error):
@@ -253,5 +342,3 @@ def add_header(req):
     req.headers["Cache-Control"] = "public, max-age=0"
     return req
 
-if __name__ == '__main__':
-    app.run()
