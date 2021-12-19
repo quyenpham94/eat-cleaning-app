@@ -4,6 +4,31 @@
 <div class="container">
   {% if recipes %}
     <div id="recipe-info" class="row justify-content-center align-items-center mt-2">
+      <!-- <div class="jumbotron col-3 my-4">
+        <div class="vertical-group" id="card">
+          <th><h5 class="text-warning">Refine Your Search</h5></th>
+            <tbody>
+              <form class="" id="card" action="/find" role="search">
+                <select class="custom-select" name="diet" id="diet">
+                  <option selected> <span class="text-muted">Diets</span> </option>
+                   {% for diet in g.diets %}
+                     <option value="{{diet}}"> {{ diet.capitalize() }} </option>
+                   {% endfor %}
+                </select>
+                <select class="custom-select" name="cuisine" id="cuisine" data-container="body">
+                  <option selected> <span class="text-muted">Cuisines</span> </option>
+                    {% for cuisine in g.cuisines %}
+                      <option value="{{cuisine}}">{{ cuisine.capitalize() }}</option>
+                    {% endfor %}
+                </select>
+                <div class="input-group-btn">
+                  <button class="btn btn-outline-warning btn-lg m-2" type="submit"><i class="fas fa-utensils"></i></button>
+                  <a href="/" class="btn btn-outline-info btn-lg m-2"><i class="fas fa-home"></i></a>
+                </div>
+              </form>
+            </tbody>
+          </div>
+        </div> -->
         {% for r in recipes %}
           <div class="jumbotron1 col-3 col-sm-10-6 m-2">
             <a href="/recipes/{{r.id}}" data-id="{{r.id}}" class="show-recipe">
