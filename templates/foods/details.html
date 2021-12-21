@@ -6,10 +6,12 @@
     <div id="recipe-id" class="row justify-content-md-center">
         <div class="jumbojon col-md-9 my-4 px-4">
             <h2 class="display-4 text-info text-center">{{ recipes['title'] }}</h2>
-                <a href="/" class="btn btn-info">Home</a>
+                <a href="/" class="btn btn-outline-info">Home</a>
+                    {% if not g.user %}
                     <a href="/login">
-                        <button type="button" class="btn btn-outline-danger"><i class="fas fa-heart fa-2x"></i></button>
+                        <button type="button" class="btn btn-outline-danger"></button>
                     </a>
+                    {% endif %}
                     <div class="row">
                         <div class="col-md-6 my-2">
                             <div class="card border">

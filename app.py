@@ -4,7 +4,7 @@ from models import connect_db, db, User, Ingredient, Meal, Recipe
 from sqlalchemy.exc import IntegrityError
 from forms import UserForm, LoginForm, UserEditForm
 import requests
-# from helper import do_logout, add_ingredients_from_api_response, add_recipe_from_api_response, diets, cuisines
+from helper import do_logout, add_ingredients_from_api_response, add_recipe_from_api_response, diets, cuisines
 
 CURR_USER_KEY = "user_id"
  
@@ -18,7 +18,7 @@ app.config['SQLALCHEMY_ECHO'] = False
 
 
 BASE_URL = "https://api.spoonacular.com/"
-API_KEY = ""
+API_KEY = "bb84fdf16255463e9e710e846b8781a5"
 
 
 connect_db(app)
@@ -43,8 +43,6 @@ def do_logout():
         del session[CURR_USER_KEY]
 
 ########## signup, login, logout ################
-
-
 
 
 @app.route('/register', methods=['GET','POST'])
@@ -196,7 +194,7 @@ def meal_page():
 
     return render_template("/foods/meals.html", ingredient_ids=ingredient_ids)
 
-@app.route("/api/meal/<int:id>", methods=["POST"])
+@app.route("/api/meals/<int:id>", methods=["POST"])
 def add_meal(id):
     """Add to meals."""
 
@@ -219,22 +217,22 @@ def add_meal(id):
 
     return jsonify(ingredient=ingredient.serialize())
 
-    def add_ingredients_from_api_response(ingredient):
-        """Add ingredients to the meal."""
+# def add_ingredients_from_api_response(ingredient):
+#     """Add ingredients to the meal."""
 
-        id = ingredient.get('id', "")
-        name = ingredient.get('name', "")
+#     id = ingredient.get('id', "")
+#     name = ingredient.get('name', "")
 
-        meal = Ingredient(id=id, name=name)
-        try:
-            db.session.add(meal)
-            db.session.commit()
+#     meal = Ingredient(id=id, name=name)
+#     try:
+#         db.session.add(meal)
+#         db.session.commit()
 
-        except Exception:
-            db.session.rollback()
-            print("Exception", str(Exception))
-            return "Sorry, Error, Please try again later", str(Exception)
-        return meal
+#     except Exception:
+#         db.session.rollback()
+#         print("Exception", str(Exception))
+#         return "Sorry, Error, Please try again later", str(Exception)
+#     return meal
 
 
 @app.route("/random")
@@ -265,13 +263,13 @@ def search_recipe():
     offset = request.args.get('offset')
     number = 8
    
-    diets = ['lacto vegetarian', 'ovo vegetarian', 'pescetarian', 'vegan', 'vegetarian']
+    # diets = ['lacto vegetarian', 'ovo vegetarian', 'pescetarian', 'vegan', 'vegetarian']
 
-    cuisines = ['american', 'asian', 'african', 'british', 'cajun', 'chinese', 'caribbean', 
-            'eastern european', 'french', 'greek', 'german',  'indian', 'irish', 
-            'italian', 'japanese', 'jewish', 'korean', 'latin american', 'mexican', 
-            'mediterranean', 'middle eastern', 'native american', 'nordic', 'spanish', 
-            'southern', 'thai', 'vietnamese']
+    # cuisines = ['american', 'asian', 'african', 'british', 'cajun', 'chinese', 'caribbean', 
+    #         'eastern european', 'french', 'greek', 'german',  'indian', 'irish', 
+    #         'italian', 'japanese', 'jewish', 'korean', 'latin american', 'mexican', 
+    #         'mediterranean', 'middle eastern', 'native american', 'nordic', 'spanish', 
+    #         'southern', 'thai', 'vietnamese']
 
 
    
@@ -315,7 +313,7 @@ def show_favorites():
 
 
 
-@app.route("/api/favorite/<int:id>", methods=["POST"])
+@app.route("/api/favorites/<int:id>", methods=["POST"])
 def add_favorite(id):
     """Add to favorites"""
     if not g.user:
@@ -336,26 +334,26 @@ def add_favorite(id):
         
     return jsonify(recipe=recipe.serialize())
 
-    def add_recipe_from_api_response(recipe):
-        """Add recipe to likes tables in the DB"""
-        id = recipe.get('id', "")
-        title = recipe.get('title', "")
-        image = recipe.get('image', "")
-        readyInMinutes = recipe.get('readyInMinutes', "")
-        servings = recipe.get('servings', "")
-        sourceName = recipe.get('sourceName', "")
-        sourceUrl = recipe.get('sourceUrl', "")
-        
-        favorite = Recipe(id=id, title=title, image=image, readyInMinutes=readyInMinutes, sourceName=sourceName, sourceUrl=sourceUrl, servings=servings)
-        try:
-            db.session.add(favorite)
-            db.session.commit()
+    # def add_recipe_from_api_response(recipe):
+    #     """Add recipe to likes tables in the DB"""
+    #     id = recipe.get('id', "")
+    #     title = recipe.get('title', "")
+    #     image = recipe.get('image', "")
+    #     readyInMinutes = recipe.get('readyInMinutes', "")
+    #     servings = recipe.get('servings', "")
+    #     sourceName = recipe.get('sourceName', "")
+    #     sourceUrl = recipe.get('sourceUrl', "")
+            
+    #     favorite = Recipe(id=id, title=title, image=image, readyInMinutes=readyInMinutes, sourceName=sourceName, sourceUrl=sourceUrl, servings=servings)
+    #     try:
+    #         db.session.add(favorite)
+    #         db.session.commit()
 
-        except Exception:
-            db.session.rollback()
-            print("Exception", str(Exception))
-            return "Sorry, Error, Please try again later", str(Exception)
-        return favorite
+    #     except Exception:
+    #         db.session.rollback()
+    #         print("Exception", str(Exception))
+    #         return "Sorry, Error, Please try again later", str(Exception)
+    # return favorite
 
 @app.errorhandler(404)
 def error_page(error):
