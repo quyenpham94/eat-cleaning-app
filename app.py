@@ -4,7 +4,7 @@ from models import connect_db, db, User, Ingredient, Meal, Recipe
 from sqlalchemy.exc import IntegrityError
 from forms import UserForm, LoginForm, UserEditForm
 import requests
-from helper import do_logout, add_ingredients_from_api_response, add_recipe_from_api_response
+# from helper import do_logout, add_ingredients_from_api_response, add_recipe_from_api_response, diets, cuisines
 
 CURR_USER_KEY = "user_id"
  
@@ -18,10 +18,12 @@ app.config['SQLALCHEMY_ECHO'] = False
 
 
 BASE_URL = "https://api.spoonacular.com/"
-API_KEY = ""
+API_KEY = "bb84fdf16255463e9e710e846b8781a5"
 
 
 connect_db(app)
+
+
 @app.before_request
 def add_user_to_g():
     """If we're logged in, and curr user to Flask global."""
@@ -197,6 +199,7 @@ def meal_page():
 @app.route("/api/meal/<int:id>", methods=["POST"])
 def add_meal(id):
     """Add to meals."""
+
     if not g.user:
         flash("Access unauthorized", "danger")
         return redirect("/")
@@ -205,7 +208,7 @@ def add_meal(id):
     if not ingredient:
         res = requests.get(f"{BASE_URL}/food/ingredients/{id}/information", params={ "apiKey": API_KEY })
         data = res.json()
-        print(data)
+        
         ingredient = add_ingredients_from_api_response(data)
 
         g.user.ingredients.append(ingredient)
@@ -216,24 +219,23 @@ def add_meal(id):
 
     return jsonify(ingredient=ingredient.serialize())
 
+    def add_ingredients_from_api_response(ingredient):
+        """Add ingredients to the meal."""
 
+        id = ingredient.get('id', "")
+        name = ingredient.get('name', "")
 
-# def add_ingredients_from_api_response(ingredient):
-#     """Add ingredients to the meal."""
+        meal = Ingredient(id=id, name=name)
+        try:
+            db.session.add(meal)
+            db.session.commit()
 
-#     id = ingredient.get('id', None)
-#     name = ingredient.get('name', None)
+        except Exception:
+            db.session.rollback()
+            print("Exception", str(Exception))
+            return "Sorry, Error, Please try again later", str(Exception)
+        return meal
 
-#     meal = Ingredient(id=id, name=name)
-#     try:
-#         db.session.add(meal)
-#         db.session.commit()
-
-#     except Exception:
-#         db.session.rollback()
-#         print("Exception", str(Exception))
-#         return "Sorry, Error, Please try again later", str(Exception)
-#     return meal
 
 @app.route("/random")
 def show_recipes():
@@ -254,7 +256,7 @@ def show_recipes():
     return render_template("/foods/random.html", recipes=recipes, recipe_ids=recipe_ids, favorites=favorites)
 
 
-@app.route("/find")
+@app.route("/refine")
 def search_recipe():
     """Inside random recipes show refine search by diets and cuisines"""
     query = request.args.get('query', "")
@@ -263,6 +265,15 @@ def search_recipe():
     offset = request.args.get('offset')
     number = 8
    
+    diets = ['lacto vegetarian', 'ovo vegetarian', 'pescetarian', 'vegan', 'vegetarian']
+
+    cuisines = ['american', 'asian', 'african', 'british', 'cajun', 'chinese', 'caribbean', 
+            'eastern european', 'french', 'greek', 'german',  'indian', 'irish', 
+            'italian', 'japanese', 'jewish', 'korean', 'latin american', 'mexican', 
+            'mediterranean', 'middle eastern', 'native american', 'nordic', 'spanish', 
+            'southern', 'thai', 'vietnamese']
+
+
    
     res = requests.get(f"{BASE_URL}/recipes/complexSearch", params={ "apiKey": API_KEY, "diet": diet, "cuisine": cuisine, "query": query, "number": number, "offset": offset })
     data = res.json()
@@ -271,14 +282,14 @@ def search_recipe():
         flash("Sorry, search limit reached!", "warning")
         render_template("/foods/random.html")
     
-    path = f"/find?query={query}&cuisine={cuisine}&diet={diet}"
+    path = f"/refine?query={query}&cuisine={cuisine}&diet={diet}"
     recipes = data['results']
     if g.user:
         recipe_ids = [r.id for r in g.user.recipes]
     else:
         recipe_ids = []
     favorites = [f['id'] for f in recipes if f['id'] in recipe_ids]
-    return render_template("/foods/recipes.html", recipes=recipes, recipe_ids=recipe_ids, favorites=favorites, url=path, offset=offset)
+    return render_template("/foods/recipes.html", diets=diets, cuisines=cuisines, recipes=recipes, recipe_ids=recipe_ids, favorites=favorites, url=path, offset=offset)
 
 
 
@@ -323,8 +334,28 @@ def aad_favorite(id):
         g.user.recipes.append(recipe)
         db.session.commit()
         
-    # flash("You add recipe to favorite!", "sucsess")
     return jsonify(recipe=recipe.serialize())
+
+    def add_recipe_from_api_response(recipe):
+        """Add recipe to likes tables in the DB"""
+        id = recipe.get('id', "")
+        title = recipe.get('title', "")
+        image = recipe.get('image', "")
+        readyInMinutes = recipe.get('readyInMinutes', "")
+        servings = recipe.get('servings', "")
+        sourceName = recipe.get('sourceName', "")
+        sourceUrl = recipe.get('sourceUrl', "")
+        
+        favorite = Recipe(id=id, title=title, image=image, readyInMinutes=readyInMinutes, sourceName=sourceName, sourceUrl=sourceUrl, servings=servings)
+        try:
+            db.session.add(favorite)
+            db.session.commit()
+
+        except Exception:
+            db.session.rollback()
+            print("Exception", str(Exception))
+            return "Sorry, Error, Please try again later", str(Exception)
+        return favorite
 
 @app.errorhandler(404)
 def error_page(error):

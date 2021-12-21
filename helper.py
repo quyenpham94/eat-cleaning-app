@@ -1,5 +1,5 @@
 from flask import session
-from models import db, User, Ingredient, Meal
+from models import db, User, Ingredient, Meal, Recipe
 import os
 
 CURR_USER_KEY = "user_id"
@@ -9,6 +9,13 @@ def do_logout():
     if CURR_USER_KEY in session:
         session.pop(CURR_USER_KEY)
 
+diets = ['lacto vegetarian', 'ovo vegetarian', 'pescetarian', 'vegan', 'vegetarian']
+
+cuisines = ['american', 'asian', 'african', 'british', 'cajun', 'chinese', 'caribbean', 
+            'eastern european', 'french', 'greek', 'german',  'indian', 'irish', 
+            'italian', 'japanese', 'jewish', 'korean', 'latin american', 'mexican', 
+            'mediterranean', 'middle eastern', 'native american', 'nordic', 'spanish', 
+            'southern', 'thai', 'vietnamese']
 
 def add_ingredients_from_api_response(ingredient):
     """Add ingredients to the meal."""
