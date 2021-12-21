@@ -18,7 +18,7 @@ app.config['SQLALCHEMY_ECHO'] = False
 
 
 BASE_URL = "https://api.spoonacular.com/"
-API_KEY = "bb84fdf16255463e9e710e846b8781a5"
+API_KEY = ""
 
 
 connect_db(app)
