@@ -37,7 +37,7 @@ class User(db.Model):
     def __repr__(self):
         return f'<User #{self.id}: {self.username}, {self.email}'
 
-    @classmethod 
+    @classmethod
     def register(cls, username, email, password):
         """Register user with hashed password and return here."""
 
@@ -46,10 +46,10 @@ class User(db.Model):
         hashed_utf8 = hashed.decode("utf8")
 
         user = User(username=username,
-                    email=email, 
+                    email=email,
                     password=hashed_utf8)
         #return instance of user with username and hashed pwd
-      
+
         db.session.add(user)
         return user
 
@@ -69,9 +69,10 @@ class Ingredient(db.Model):
 
     __tablename__ = "ingredients"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
-   
+    calories = db.Column(db.String, nullable=False)
+
     users = db.relationship('User', secondary="meals", backref='ingredients', lazy=True)
 
     meals = db.relationship('Meal')
@@ -84,8 +85,9 @@ class Ingredient(db.Model):
         """Return a dict representatio of ingredients which we can turn into JSON."""
         return {
             'id': self.id,
-            'name': self.name
-        }
+            'name': self.name,
+            # 'calories': self.nutrition.nutrients(1)['amount']
+                   }
 
     def __repr__(self):
         return f'<Ingredient = id:{self.id}, name:{self.name}'
@@ -94,7 +96,7 @@ class Meal(db.Model):
     """Create a meal for each user."""
 
     __tablename__ = "meals"
-    
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='cascade'), primary_key=True)
     ingredient_id = db.Column(db.Integer, db.ForeignKey('ingredients.id', ondelete='cascade'), primary_key=True)
@@ -103,20 +105,20 @@ class Meal(db.Model):
         return f'<Meal=user_id:{self.user_id} ingredient_id:{self.ingredient_id}>'
 
 class Recipe(db.Model):
-    __tablename__ = 'recipes' 
+    __tablename__ = 'recipes'
 
     id = db.Column(
          db.Integer,
          primary_key=True)
-    
+
     title = db.Column(
             db.String,
             nullable=False)
-   
+
     image = db.Column(
-            db.String, 
+            db.String,
             nullable=False)
-    
+
     readyInMinutes = db.Column(
                      db.Integer)
 
@@ -131,7 +133,7 @@ class Recipe(db.Model):
 
     users = db.relationship('User',
                             secondary='favorites',
-                            backref='recipes', 
+                            backref='recipes',
                             lazy=True)
 
     favorites = db.relationship('Favorite')
@@ -159,13 +161,13 @@ class Favorite(db.Model):
     """ Many to Many Users to Recipes """
     __tablename__ = "favorites"
 
-    id = db.Column(db.Integer, 
-                   primary_key=True, 
+    id = db.Column(db.Integer,
+                   primary_key=True,
                    autoincrement=True)
     user_id = db.Column(db.Integer,
-                        db.ForeignKey('users.id', ondelete='cascade'), 
+                        db.ForeignKey('users.id', ondelete='cascade'),
                         primary_key=True)
-    recipe_id = db.Column(db.Integer, 
+    recipe_id = db.Column(db.Integer,
                           db.ForeignKey('recipes.id', ondelete='cascade'),
                           primary_key=True)
 

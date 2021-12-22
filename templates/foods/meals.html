@@ -5,23 +5,39 @@
 
 <div class="container">
     {% if g.user.ingredients %}
-    <div id="ingredient-info" class="row justify-content-center align-items-center" data-id="{{ingredient.id}}">
-        <h1>eat</h1>
-        <ul>
-            {{g.user.ingredients}}
-        </ul>>
-        <!-- calculate calories here -->
-    </div>
-    {% else %}
-    <div class="jumbotron my-4">
+    <div class="row justify-content-center align-items-center mt-2">
+      {% for i in g.user.ingredients %}
+      <div class="jumbotron1 col-3 col-sm-10-6 m-2">
+        <a href="/ingredients/{{i.id}}" data-id="{{i.id}}" class="show-ingredient">
+          <div class="card border border-warning mb-4 mx-auto">
+           
+              <div class="card-body py-0">
+                <h5 class="text-danger font-weight-bold card-title m-2">{{i.name }}</h5> </a>
+                 
+                  {% if g.user %}
+                  <div class="d">
+                    <button style="float: right;" data-id="{{i.id}}" class='fav btn btn-sm'>
+                      <i class="{% if i.id in ingredient_ids %}fas fa-heart fa-2x{% else %}far fa-heart fa-2x{% endif %}"></i></button>
+                  </div>
+                  {% endif %}
+              </div>
+          </div>
+      </div>
+      {% endfor %}
+      <hr class="my-2 px-6"> 
+      <div class="flex"> 
+        <a href="/" class="neon btn btn-outline-warning btn-lg m-2">Home</i></a>
+      </div>
+      {% else %}
+      <div class="jumbotron my-4">
         <div class="container">
-            <h1 class="display-4 text-danger text-center">Sorry, you don't have any thing in your meal!
-                <a href="/search" class="neon btn btn-outline-warning btn-lg">Back</a>
-            </h1>
+          <h1 class="display-4 text-danger text-center"> Sorry, you do not have any ingredient!
+            <a href="/" class="neon btn btn-outline-warning btn-lg m-2">Home</a>    
+          </h1> 
         </div>
-    </div>
-</div>
+      </div>
     {% endif %}
-{% endblock %}
-
+    </div>
+  </div>
+  {% endblock %}
 

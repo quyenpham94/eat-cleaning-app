@@ -181,7 +181,11 @@ def search_ingredient():
     ### add favorite function here
     return render_template("/foods/search.html", ingredients=ingredients, ingredient_ids=ingredient_ids, meals=meals)
 
-
+@app.route("/ingredients/<int:id>")
+def show_ingredient(id):
+    res = requests.get(f"{BASE_URL}/food/ingredients/{id}/information", params={ "apiKey": API_KEY })
+    data = res.json()
+    return render_template("foods/ingredients.html", ingredients=data)
 
 @app.route("/meals")
 def meal_page():
@@ -189,10 +193,11 @@ def meal_page():
     if not g.user:
         flash('You must be logged in first','danger')
         return redirect("/login")
-
-    ingredient_ids = [r.id for r in g.user.ingredients]
+    user_response = g.user.ingredients
+    ingredient_ids = [r.id for r in user_response]
 
     return render_template("/foods/meals.html", ingredient_ids=ingredient_ids)
+
 
 @app.route("/api/meal/<int:id>", methods=["POST"])
 def add_meal(id):
@@ -204,7 +209,7 @@ def add_meal(id):
 
     ingredient = Ingredient.query.filter_by(id=id).first()
     if not ingredient:
-        res = requests.get(f"{BASE_URL}/recipes/{id}/nutritionWidget.json", params={ "apiKey": API_KEY })
+        res = requests.get(f"{BASE_URL}/food/ingredients/{id}/information", params={ "apiKey": API_KEY, "amount":1 })
         data = res.json()
         
         ingredient = add_ingredients_from_api_response(data)
@@ -327,26 +332,6 @@ def add_favorite(id):
         
     return jsonify(recipe=recipe.serialize())
 
-    # def add_recipe_from_api_response(recipe):
-    #     """Add recipe to likes tables in the DB"""
-    #     id = recipe.get('id', "")
-    #     title = recipe.get('title', "")
-    #     image = recipe.get('image', "")
-    #     readyInMinutes = recipe.get('readyInMinutes', "")
-    #     servings = recipe.get('servings', "")
-    #     sourceName = recipe.get('sourceName', "")
-    #     sourceUrl = recipe.get('sourceUrl', "")
-            
-    #     favorite = Recipe(id=id, title=title, image=image, readyInMinutes=readyInMinutes, sourceName=sourceName, sourceUrl=sourceUrl, servings=servings)
-    #     try:
-    #         db.session.add(favorite)
-    #         db.session.commit()
-
-    #     except Exception:
-    #         db.session.rollback()
-    #         print("Exception", str(Exception))
-    #         return "Sorry, Error, Please try again later", str(Exception)
-    # return favorite
 
 @app.errorhandler(404)
 def error_page(error):

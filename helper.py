@@ -9,7 +9,7 @@ def do_logout():
     if CURR_USER_KEY in session:
         session.pop(CURR_USER_KEY)
 
-diets = ['lacto vegetarian', 'ovo vegetarian', 'pescetarian', 'vegan', 'vegetarian']
+diets = ['lacto vegetarian', 'ovo vegetarian', 'pescetarian', 'vegan', 'vegetarian', 'gluten free', 'ketogenic']
 
 maxFats =  [10,20,30,50,60,70,80,90,100]
 
@@ -20,8 +20,9 @@ def add_ingredients_from_api_response(ingredient):
 
     id = ingredient.get('id', None)
     name = ingredient.get('name', None)
+    calories = ingredient.get('calories',None)
 
-    meal = Ingredient(id=id, name=name)
+    meal = Ingredient(id=id, name=name, calories=calories)
     try:
         db.session.add(meal)
         db.session.commit()

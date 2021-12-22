@@ -5,40 +5,39 @@
 <h1>Search Ingredient </h1>
 
 <div class="container" id="search-ingredient" >
-    <form autocomplete='off' method="GET" id="search">
+    <form type="submit">
         <div class="autocomplete suggestions">
 
             <input data-autocomplete list="food-suggestion" class="form-control" type="text" name="query" placeholder="Search Ingredient">
 
-            <button class="btn btn-outline-success" type="submit" value="find">Search</button>
-            
-        <div class="add-food">
-            {% for i in ingredients %}
-            <div class="jumbotron1 col-3 col-sm-10-6 m-2">
-                <a href="/meal/{{i.id}}" data-id="{{i.id}}" class="show-ingredient">
-                    <div class="card-body">
-                        <div class="card border">
-                            <p class="ingredient-name text-center">{{ i.name }}</p>
-                            <p class="ingredient-calories">{{ i.calories }}</p>
-                            {% if g.user %}
-                            <button data-id="{{i.id}}" class="fav btn btn-sm">
-                                <i class="{% if i.id in ingredient_ids %} fas fa-heart fa-2x {% else %} far fa-heart fa-2x {% endif %}"></i>
-                            </button>
-                            {% endif %}
-                  
+            <button class="btn btn-outline-success" type="submit" >Search</button>
+        </div> 
+    </form>
+        
+</div>      
+<div class="add-food">
+    {% for i in ingredients %}
+        <div class="jumbotron1 col-3 col-sm-10-6 m-2">
+                <a href="/ingredients/{{i.id}}" data-id="{{i.id}}" class="show-ingredient">
+                    <div>
+                        <div class="card-body meal-info text-center">
+                            <div class="card-body border">
+                                <p class="ingredient-name">{{ i.name }}</p>
+                              
+                                {% if g.user %}
+                                <button data-id="{{i.id}}" class='fav btn btn-sm border'>
+                                    <i class="{% if i.id in ingredient_ids %}far fa-heart fa-2x{% else %}fas fa-heart fa-2x{% endif %}"></i>
+                                </button>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </a> 
-            </div>
-            
-            {% endfor %}
         </div>
+            
+    {% endfor %}
+</div>
 
-    
-
-       
-    </form>
-</div> 
    
 
 <div class="today-meal border-0">
@@ -53,29 +52,6 @@
 <div class="container">
     <a href="/" class="neon btn btn-outline-warning btn-lg m-2">Home</i></a>  
 </div>
-
-<!-- <script type="text/javascript">
-    $(function(){
-        $(".card-text").on('click',function(event){
-            event.preventDefault();
-            var food = $(".ingredient-name").text();
-            // var food = 'food';
-            console.log(food);
-            new_ul = document.createElement("ul");
-            $("#food-list").append(new_ul);
-            $(new_ul).append(food);
-        })
-        
-       
-    })
-    $(function(){
-         $("#search").click(function(event){
-         
-
-        })
-    })
-
-</script> -->
 
 {% endblock %}
 
