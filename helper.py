@@ -20,9 +20,9 @@ def add_ingredients_from_api_response(ingredient):
 
     id = ingredient.get('id', None)
     name = ingredient.get('name', None)
-    calories = ingredient.get('calories',None)
+    
 
-    meal = Ingredient(id=id, name=name, calories=calories)
+    meal = Ingredient(id=id, name=name)
     try:
         db.session.add(meal)
         db.session.commit()

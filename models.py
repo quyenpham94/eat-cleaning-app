@@ -71,7 +71,7 @@ class Ingredient(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
-    calories = db.Column(db.String, nullable=False)
+    
 
     users = db.relationship('User', secondary="meals", backref='ingredients', lazy=True)
 
@@ -86,7 +86,6 @@ class Ingredient(db.Model):
         return {
             'id': self.id,
             'name': self.name,
-            # 'calories': self.nutrition.nutrients(1)['amount']
                    }
 
     def __repr__(self):
