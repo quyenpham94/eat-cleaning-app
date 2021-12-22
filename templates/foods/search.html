@@ -12,30 +12,23 @@
 
             <button class="btn btn-outline-success" type="submit" value="find">Search</button>
             
-        <div class="add-food" type="submit">
+        <div class="add-food">
             {% for i in ingredients %}
-
-            <div>
-                <div class="card my-4">
+            <div class="jumbotron1 col-3 col-sm-10-6 m-2">
+                <a href="/meal/{{i.id}}" data-id="{{i.id}}" class="show-ingredient">
                     <div class="card-body">
-                        <!-- <form method="POST" type="submit" href="/meals" name="ingredient-name"> -->
-                            <div class="card-text">
-                                {% if g.user %}
-                                <p class="ingredient-name">{{ i.name }}
-                                    
-                                </p>
-                                <a href="/meals">
-                                    <button class="btn btn-outline-success" type="button" id="add-food" data-id="{{i.id}}">
-                                        <i class="{% if i.id in ingredient_ids %} fas fa-heart fa-2x {% else %} far fa-heart fa-2x {% endif %}"></i></button>
-                                </a>
-                               
-                                {% endif %}
-                            </div>
-
-                        <!-- </form> -->
-
+                        <div class="card border">
+                            <p class="ingredient-name text-center">{{ i.name }}</p>
+                            <p class="ingredient-calories">{{ i.calories }}</p>
+                            {% if g.user %}
+                            <button data-id="{{i.id}}" class="fav btn btn-sm">
+                                <i class="{% if i.id in ingredient_ids %} fas fa-heart fa-2x {% else %} far fa-heart fa-2x {% endif %}"></i>
+                            </button>
+                            {% endif %}
+                  
+                        </div>
                     </div>
-                </div>
+                </a> 
             </div>
             
             {% endfor %}
@@ -55,13 +48,13 @@
     </div>
 </div>
 <div class="container">
-    <a href="/meals" class="btn btn-outline btn-lg">Your Meal</a>
+    <a href="/meals" class="neon btn btn-outline-warning btn-lg m-2">Your Meal</a>
 </div>
 <div class="container">
-    <a href="/" class="btn btn-outline btn-lg">Home</a>
+    <a href="/" class="neon btn btn-outline-warning btn-lg m-2">Home</i></a>  
 </div>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
     $(function(){
         $(".card-text").on('click',function(event){
             event.preventDefault();
@@ -82,35 +75,8 @@
         })
     })
 
+</script> -->
 
-
-       
-    // })
-    // $(function(){
-    //      $("#search").click(function(event){
-            
-
-    //     })
-    // })
-
-    // const form = document.querySelector('.search')
-    // const input = document.querySelector('.form-control')
-    // const card = document.querySelector('.card')
-
-    // card.addEventListener('click', function(e){
-        
-    // })
-    // form.addEventListener('submit', function(event){
-    //     event.preventDefault();
-    //     const new_ul = document.createElement("ul");
-    //     let food_list = document.querySelector("#food-list");
-    //     food_list.appendChild(new_ul);
-    //     var ingredient = document.querySelector(".ingredient-name");
-    //     new_ul.appendChild(ingredient);
-
-    // })
-</script>
- <!-- <script src="/static/app.js"></script>  -->
 {% endblock %}
 
 

@@ -20,6 +20,14 @@
                         {% endfor %}
                     </option>
                 </select>
+                <select class="select" name="maxCalories" id="maxCalories">
+                    <option selected>
+                        <span class="text-muted">Max Calories</span></option>
+                        {% for maxCalories in maxCalorieses %}
+                        <option value="{{maxCalories}}"> {{ maxCalories }}</option>
+                        {% endfor %}
+                    </option>
+                </select>
                 <select class="select" name="maxFat" id="maxFat">
                     <option selected>
                         <span class="text-muted">Max Fat</span></option>
@@ -39,7 +47,7 @@
             <a href="/recipes/{{r.id}}" data-id="{{r.id}}" class="show-recipe">
                 <div>
                     <img src="{{r.image}}" class="card-img-top" alt="{{r.name}}">
-                        <div class="card-body">
+                        <div class="card-body recipe-info">
                             <h5 class="text-danger text-center card-title">{{r['title']}}</h5></a>
                                 <div class="card-body">
                                     <p class="card-text text-right">Total cook time: {{r.readyInminutes}} minutes</p>

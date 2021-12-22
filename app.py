@@ -4,7 +4,7 @@ from models import connect_db, db, User, Ingredient, Meal, Recipe
 from sqlalchemy.exc import IntegrityError
 from forms import UserForm, LoginForm, UserEditForm
 import requests
-from helper import do_logout, add_ingredients_from_api_response, add_recipe_from_api_response, diets, cuisines, maxFats
+from helper import do_logout, add_ingredients_from_api_response, add_recipe_from_api_response, diets, maxFats, maxCalorieses
 
 CURR_USER_KEY = "user_id"
  
@@ -190,11 +190,11 @@ def meal_page():
         flash('You must be logged in first','danger')
         return redirect("/login")
 
-    ingredient_ids = [r['id'] for r in g.user.ingredients]
+    ingredient_ids = [r.id for r in g.user.ingredients]
 
     return render_template("/foods/meals.html", ingredient_ids=ingredient_ids)
 
-@app.route("/api/meals/<int:id>", methods=["POST"])
+@app.route("/api/meal/<int:id>", methods=["POST"])
 def add_meal(id):
     """Add to meals."""
 
@@ -204,7 +204,7 @@ def add_meal(id):
 
     ingredient = Ingredient.query.filter_by(id=id).first()
     if not ingredient:
-        res = requests.get(f"{BASE_URL}/food/ingredients/{id}/information", params={ "apiKey": API_KEY })
+        res = requests.get(f"{BASE_URL}/recipes/{id}/nutritionWidget.json", params={ "apiKey": API_KEY })
         data = res.json()
         
         ingredient = add_ingredients_from_api_response(data)
@@ -247,11 +247,11 @@ def show_recipes():
     recipes = data['recipes']
 
     if g.user:
-        recipe_ids = [r['id'] for r in g.user.recipes]
+        recipe_ids = [r.id for r in g.user.recipes]
     else:
         recipe_ids = []
     favorites = [f['id'] for f in recipes if f['id'] in recipe_ids]
-    return render_template("/foods/random.html", recipes=recipes, recipe_ids=recipe_ids, favorites=favorites, diets=diets, maxFats=maxFats)
+    return render_template("/foods/random.html", recipes=recipes, recipe_ids=recipe_ids, favorites=favorites, diets=diets, maxCalorieses=maxCalorieses, maxFats=maxFats)
 
 
 @app.route("/refine")
@@ -260,26 +260,27 @@ def search_recipe():
     # query = request.args.get('query', "")
     
     diet = request.args.get('diet', "")
-    maxFat = request.args.get('maxFat', "")
+    maxFat = request.args.get('maxFat',"")
+    maxCalories = request.args.get('maxCalories', "")
     offset = request.args.get('offset')
     number = 8
    
     
-    res = requests.get(f"{BASE_URL}/recipes/complexSearch", params={ "apiKey": API_KEY, "diet": diet, "maxFat": maxFat, "number": number, "offset": offset})
+    res = requests.get(f"{BASE_URL}/recipes/complexSearch", params={ "apiKey": API_KEY, "diet": diet, "maxFat": maxFat, "maxCalories": maxCalories, "number": number, "offset": offset})
     data = res.json()
    
     if data.get('result') == 0:
         flash("Sorry, search limit reached!", "warning")
         render_template("/foods/random.html")
     
-    path = f"/refine?maxFat={maxFat}&diet={diet}"
+    path = f"/refine?maxFat={maxFat}&maxCalories={maxCalories}&diet={diet}"
     recipes = data['results']
     if g.user:
         recipe_ids = [r.id for r in g.user.recipes]
     else:
         recipe_ids = []
     favorites = [f['id'] for f in recipes if f['id'] in recipe_ids]
-    return render_template("/foods/recipes.html", diets=diets, maxFats=maxFats, recipes=recipes, recipe_ids=recipe_ids, favorites=favorites, url=path, offset=offset)
+    return render_template("/foods/recipes.html", diets=diets, maxFats=maxFats, maxCalorieses=maxCalorieses, recipes=recipes, recipe_ids=recipe_ids, favorites=favorites, url=path, offset=offset)
 
 
 
@@ -305,7 +306,7 @@ def show_favorites():
 
 
 
-@app.route("/api/favorites/<int:id>", methods=["POST"])
+@app.route("/api/favorite/<int:id>", methods=["POST"])
 def add_favorite(id):
     """Add to favorites"""
     if not g.user:

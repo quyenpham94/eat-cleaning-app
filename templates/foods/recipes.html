@@ -16,6 +16,14 @@
                                     {% endfor %}
                                 </option>
                             </select>
+                            <select class="select" name="maxCalories" id="maxCalories">
+                                <option selected>
+                                    <span class="text-muted">Max Calories</span></option>
+                                    {% for maxCalories in maxCalorieses %}
+                                    <option value="{{maxCalories}}"> {{ maxCalories }}</option>
+                                    {% endfor %}
+                                </option>
+                            </select>
                             <select class="select" name="maxFat" id="maxFat">
                                 <option selected>
                                     <span class="text-muted">Max Fat</span></option>

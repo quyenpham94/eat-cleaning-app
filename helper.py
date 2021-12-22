@@ -11,12 +11,10 @@ def do_logout():
 
 diets = ['lacto vegetarian', 'ovo vegetarian', 'pescetarian', 'vegan', 'vegetarian']
 
-cuisines = ['american', 'asian', 'african', 'british', 'cajun', 'chinese', 'caribbean', 
-            'eastern european', 'french', 'greek', 'german',  'indian', 'irish', 
-            'italian', 'japanese', 'jewish', 'korean', 'latin american', 'mexican', 
-            'mediterranean', 'middle eastern', 'native american', 'nordic', 'spanish', 
-            'southern', 'thai', 'vietnamese']
-maxFats = [10,20,30,50,60,70,80,90,100]
+maxFats =  [10,20,30,50,60,70,80,90,100]
+
+maxCalorieses = [50,100,150,200,250,300,350,400,450,500,550,600,650,700,750,800]
+
 def add_ingredients_from_api_response(ingredient):
     """Add ingredients to the meal."""
 
