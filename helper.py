@@ -16,7 +16,7 @@ cuisines = ['american', 'asian', 'african', 'british', 'cajun', 'chinese', 'cari
             'italian', 'japanese', 'jewish', 'korean', 'latin american', 'mexican', 
             'mediterranean', 'middle eastern', 'native american', 'nordic', 'spanish', 
             'southern', 'thai', 'vietnamese']
-
+maxFats = [10,20,30,50,60,70,80,90,100]
 def add_ingredients_from_api_response(ingredient):
     """Add ingredients to the meal."""
 

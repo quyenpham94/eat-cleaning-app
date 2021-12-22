@@ -4,7 +4,7 @@ from models import connect_db, db, User, Ingredient, Meal, Recipe
 from sqlalchemy.exc import IntegrityError
 from forms import UserForm, LoginForm, UserEditForm
 import requests
-from helper import do_logout, add_ingredients_from_api_response, add_recipe_from_api_response, diets, cuisines
+from helper import do_logout, add_ingredients_from_api_response, add_recipe_from_api_response, diets, cuisines, maxFats
 
 CURR_USER_KEY = "user_id"
  
@@ -251,43 +251,35 @@ def show_recipes():
     else:
         recipe_ids = []
     favorites = [f['id'] for f in recipes if f['id'] in recipe_ids]
-    return render_template("/foods/random.html", recipes=recipes, recipe_ids=recipe_ids, favorites=favorites)
+    return render_template("/foods/random.html", recipes=recipes, recipe_ids=recipe_ids, favorites=favorites, diets=diets, maxFats=maxFats)
 
 
 @app.route("/refine")
 def search_recipe():
-    """Inside random recipes show refine search by diets and cuisines"""
-    query = request.args.get('query', "")
-    cuisine = request.args.get('cuisine', "")
+    """Inside random recipes show refine search by diets and nutritions"""
+    # query = request.args.get('query', "")
+    
     diet = request.args.get('diet', "")
+    maxFat = request.args.get('maxFat', "")
     offset = request.args.get('offset')
     number = 8
    
-    # diets = ['lacto vegetarian', 'ovo vegetarian', 'pescetarian', 'vegan', 'vegetarian']
-
-    # cuisines = ['american', 'asian', 'african', 'british', 'cajun', 'chinese', 'caribbean', 
-    #         'eastern european', 'french', 'greek', 'german',  'indian', 'irish', 
-    #         'italian', 'japanese', 'jewish', 'korean', 'latin american', 'mexican', 
-    #         'mediterranean', 'middle eastern', 'native american', 'nordic', 'spanish', 
-    #         'southern', 'thai', 'vietnamese']
-
-
-   
-    res = requests.get(f"{BASE_URL}/recipes/complexSearch", params={ "apiKey": API_KEY, "diet": diet, "cuisine": cuisine, "query": query, "number": number, "offset": offset })
+    
+    res = requests.get(f"{BASE_URL}/recipes/complexSearch", params={ "apiKey": API_KEY, "diet": diet, "maxFat": maxFat, "number": number, "offset": offset})
     data = res.json()
    
     if data.get('result') == 0:
         flash("Sorry, search limit reached!", "warning")
         render_template("/foods/random.html")
     
-    path = f"/refine?query={query}&cuisine={cuisine}&diet={diet}"
+    path = f"/refine?maxFat={maxFat}&diet={diet}"
     recipes = data['results']
     if g.user:
         recipe_ids = [r.id for r in g.user.recipes]
     else:
         recipe_ids = []
     favorites = [f['id'] for f in recipes if f['id'] in recipe_ids]
-    return render_template("/foods/recipes.html", diets=diets, cuisines=cuisines, recipes=recipes, recipe_ids=recipe_ids, favorites=favorites, url=path, offset=offset)
+    return render_template("/foods/recipes.html", diets=diets, maxFats=maxFats, recipes=recipes, recipe_ids=recipe_ids, favorites=favorites, url=path, offset=offset)
 
 
 

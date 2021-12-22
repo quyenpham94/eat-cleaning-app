@@ -9,6 +9,31 @@
             <h1>Some Random Recipes</h1>
         </div>
     </div>
+    <div id="card">
+        <h5>Refine Your Search By Calories</h5>
+            <form id="card" action="/refine" role="refine">
+                <select class="select" name="diet" id="diet">
+                    <option selected>
+                        <span class="text-muted">Diets</span></option>
+                        {% for diet in diets %}
+                        <option value="{{diet}}"> {{ diet.capitalize() }}</option>
+                        {% endfor %}
+                    </option>
+                </select>
+                <select class="select" name="maxFat" id="maxFat">
+                    <option selected>
+                        <span class="text-muted">Max Fat</span></option>
+                        {% for maxFat in maxFats %}
+                        <option value="{{maxFat}}"> {{ maxFat }}</option>
+                        {% endfor %}
+                    </option>
+                </select>
+                <div>
+                    <button class="btn btn-outline-info btn-lg" type="submit">Refine</button>
+                    <a href="/" class="btn btn-outline-info btn-lg">Home</a>
+                </div>
+            </form>
+    </div>
     {% for r in recipes %}
         <div class="jumbotron1 col-3 col-sm-10-6 m-2">
             <a href="/recipes/{{r.id}}" data-id="{{r.id}}" class="show-recipe">
