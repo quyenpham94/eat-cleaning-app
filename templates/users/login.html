@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1 class="display-1">Log In</h1>
-<p class="lead">Login Below.  Don't have an account? <a href="/register">Register here</a> </p>
+<p class="lead">Login Below.  Don't have an account? <a href="/register" style="color:#ee5132;">Register here</a> </p>
 <form method="POST">
     {{ form.hidden_tag() }}
 
@@ -19,7 +19,7 @@
     </p>
     {% endfor %}
 
-    <button class="btn btn-sucess" type="submit">Login</button>
+    <button class="btn btn-outline-success btn-lg" style="background-color: #fda898;" type="submit">Login</button>
     
 </form>
 

@@ -5,8 +5,8 @@
     {% if recipes %}
     <div id="recipe-id" class="row justify-content-md-center">
         <div class="jumbojon col-md-9 my-4 px-4">
-            <h2 class="display-4 text-info text-center">{{ recipes['title'] }}</h2>
-                <a href="/" class="btn btn-outline-info">Home</a>
+            <h2 class="display-4 text-center">{{ recipes['title'] }}</h2>
+                <a href="/" class="btn btn-outline-success btn-lg" style="background-color: #fda898;">Home</a>
                     {% if not g.user %}
                     <a href="/login">
                         <button type="button" class="btn btn-outline-danger"></button>
@@ -18,7 +18,7 @@
                                 <img class="recipe-img" src="{{recipes.image}}" alt="{{recipes.name}}">
                             </div>
                             <div class="card-body">
-                                <h3 class="text-center text-info">Steps</h3>
+                                <h3 class="text-center">Steps</h3>
                                 {% for recipe in recipes.analyzedInstructions %}
                                 <ul class="list-group">
                                     {% if recipe.name %}
@@ -47,28 +47,28 @@
                                 <div>
                                     <ul>
                                       {% if recipes.calories %}
-                                        <li class="text-info">Calories</li>
+                                        <li>Calories</li>
                                       {% endif %}
                                       {% if recipes.sustainable %}
-                                        <li class="text-info">Sustainable</li>
+                                        <li>Sustainable</li>
                                       {% endif %}
                                       {% if recipes.ketogenic %}
-                                        <li class="text-info">Ketogenic</li>
+                                        <li>Ketogenic</li>
                                       {% endif %}
                                       {% if recipes.vegetarian %}
-                                        <li class="text-info">Vegetarian</li>
+                                        <li>Vegetarian</li>
                                       {% endif %}
                                       {% if recipes.vegan %}
-                                        <li class="text-info">Vegan</li>
+                                        <li>Vegan</li>
                                       {% endif %}
                                       {% if recipes.glutenFree %}
-                                        <li class="text-info">Gluten free</li>
+                                        <li>Gluten free</li>
                                       {% endif %}
                                       {% if recipes.dairyFree %}
-                                        <li class="text-info">Dairy free</li>
+                                        <li>Dairy free</li>
                                       {% endif %}
                                       {% if recipes.whole30 %}
-                                        <li class="text-info">Whole30</li>
+                                        <li>Whole30</li>
                                       {% endif %}
                                       <hr>
                                       {% if 'likes' not in recipes%}
@@ -83,7 +83,7 @@
                                         <li><i class="fas fa-fire text-warning"></i> Popular</li>
                                       {% endif %}
                                     </ul>
-                                    <h3 class="text-center text-info">Ingredients</h3>
+                                    <h3 class="text-center">Ingredients</h3>
                                         <ul class="list-group">
                                             {% for i in recipes.extendedIngredients %}
                                             <li data-id="{{i.id}}">{{i.original}}</li>
@@ -99,7 +99,7 @@
     <div class="jumbotron my-4">
         <div class="container">
             <h1 class="display-4 text-danger text-center">Sorry! Failed to get recipe information!</h1>
-             <a href="/" class="btn btn-outline-warning btn-lg">Home</a>
+             <a href="/"class="btn btn-outline-success btn-lg" style="background-color: #fda898;">Home</a>
         </div>
     </div>
     {% endif %}

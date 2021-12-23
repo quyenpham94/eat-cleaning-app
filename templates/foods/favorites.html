@@ -3,11 +3,11 @@
 {% block content %}
 <div class="container">
   {% if g.user.recipes %}
-  <div id="recipe-info" class="row justify-content-center align-items-center mt-2">
+  <div id="recipe-info" class="row justify-content-center align-items-center">
     {% for r in g.user.recipes %}
-    <div class="jumbotron1 col-3 col-sm-10-6 m-2">
+    <div class="jumbotron1 col-3 col-sm-10-6 m-2 mx-auto">
       <a href="/recipes/{{r.id}}" data-id="{{r.id}}" class="show-recipe">
-        <div class="card border border-warning mb-4 mx-auto">
+        <div class="card border mb-4 mx-auto" style="background-color: #fef6f4;">
           <img class="card-img-top" src="{{r['image']}}" alt="Card image cap" alt="{{r.name}}"> 
             <div class="card-body py-0">
               <h5 class="text-danger font-weight-bold card-title m-2">{{ r['title'] }}</h5> </a>
@@ -16,7 +16,7 @@
                   <p class="card-text">Serves: {{r.servings}}</p>
                 </div>
                 {% if g.user %}
-                <div class="d">
+                <div class="vertical-group">
                   <button style="float: right;" data-id="{{r.id}}" class='fav btn btn-sm'>
                     <i class="{% if r.id in recipe_ids %}fas fa-heart fa-2x{% else %}far fa-heart fa-2x{% endif %}"></i></button>
                 </div>
@@ -27,13 +27,13 @@
     {% endfor %}
     <hr class="my-2 px-6"> 
     <div class="flex"> 
-      <a href="/" class="neon btn btn-outline-warning btn-lg m-2"><i class="fas fa-home"></i></a>
+      <a href="/" class="btn btn-outline-success btn-lg" style="background-color: #fda898;">Home</a>
     </div>
     {% else %}
     <div class="jumbotron my-4">
       <div class="container">
         <h1 class="display-4 text-danger text-center"> Sorry, you do not have any saved recipes!
-          <a href="/" class="neon btn btn-outline-warning btn-lg m-2"><i class="fas fa-home"></i></a>    
+          <a href="/" class="btn btn-outline-success btn-lg" style="background-color: #fda898;">Home</a>    
         </h1> 
       </div>
     </div>

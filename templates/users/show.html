@@ -3,25 +3,20 @@
 {% block content %}
 
 <div class="container">
-    <h1 class="display-5 font-weight-bold">{{user.username}}</h1>
+    <h1 class="display-5 font-weight-bold">Username: {{user.username}}</h1>
+    <div class="col-7">
+        <h5 class="font-weight-bold">Email: {{user.email}}</h5>      
+    </div>
     <form action="/users/{{user.id}}/delete" method="POST">
-        <button class="btn btn-outline-danger" type="submit">Delete</button>
+        <button class="btn btn-outline-danger btn-lg"  type="submit">Delete</button>
     </form>
-    <a class="btn btn-outline-warning btn-lg" href="/users/{{user.id}}/update">
-        <button class="btn btn-outline" type="submit">Edit</button>
+    <a class="btn btn-outline-success btn-lg" style="background-color: #fda898;" href="/users/{{user.id}}/update">
+      
+        <div class="row">
+            <button class="btn btn-outline" type="submit">Edit</button>
+        </div>
     </a>
 </div>
-<div class="row">
-    <div class="col-7">
-        <h4 class="lead text-warning">Email: {{user.email}}</h4>      
-    </div>
-</div>
 
-<!-- add favorite function here -->
-<div class="container">
-    <h2 class="display-5 font-weight-bold">New Menu</h2>
-    <form action="/search">
-        <button class="btn btn-outline-danger" type="submit">Go</button>
-    </form>
-</div>
+
 {% endblock %}

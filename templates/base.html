@@ -9,17 +9,20 @@
   <link rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.css">
 </head>
 
-<body>
-  <nav class="navbar navbar-light bg-primary justify-content-between ">
+<body style="background-color: #e5f0f1;">
+  <nav class="navbar navbar-dark justify-content-between" style="background-color: #034c52;">
     <div class="container">
-      <a href="/" class="navbar-brand text-light">Eat-cleaning</a>
+      <a href="/" class="navbar-brand text-light" >Eat-cleaning</a>
       <ul class="nav navbar-nav flex-row float-right">
         {% if session['user_id'] %}
         <li class="nav-item">
           <a class="nav-link pr-3 text-light" href="/users/{{g.user.id}}">{{g.user.username}}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link pr-3 text-light" href="/favorites">My-Favorite</a>
+          <a class="nav-link pr-3 text-light" href="/favorites">Favorite-Recipes</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link pr-3 text-light" href="/meals">My-Meal</a>
         </li>
         <li class="nav-item">
           <a class="nav-link pr-3 text-light" href="/logout">Logout</a>

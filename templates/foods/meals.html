@@ -3,37 +3,44 @@
 {% block content %}
 <h1>Your Meal</h1>
 
-<div class="container">
+<div class="container card border">
     {% if g.user.ingredients %}
-    <div class="row justify-content-center align-items-center mt-2">
+    <div class="row justify-content-center align-items-center mt-2" id="meal">
       {% for i in g.user.ingredients %}
-      <div class="jumbotron1 col-3 col-sm-10-6 m-2">
+      <div>
         <a href="/ingredients/{{i.id}}" data-id="{{i.id}}" class="show-ingredient">
-          <div class="card border border-warning mb-4 mx-auto">
-           
-              <div class="card-body py-0">
-                <h5 class="text-danger font-weight-bold card-title m-2">{{i.name }}</h5> </a>
-                 
-                  {% if g.user %}
-                  <div class="d">
+          <div class="card border mb-4 mx-auto">
+
+              <div class="py-0" style="background-color: #fef6f4;">
+                <h5 class="text-danger card-title m-2">{{i.name}}</h5>
                     <button style="float: right;" data-id="{{i.id}}" class='fav btn btn-sm'>
                       <i class="{% if i.id in ingredient_ids %}fas fa-heart fa-2x{% else %}far fa-heart fa-2x{% endif %}"></i></button>
-                  </div>
-                  {% endif %}
               </div>
           </div>
       </div>
       {% endfor %}
-      <hr class="my-2 px-6"> 
-      <div class="flex"> 
-        <a href="/" class="neon btn btn-outline-warning btn-lg m-2">Home</i></a>
+      <div>
+          <form type="click">
+              <a href="/search" class="btn btn-outline-success btn-lg" style="background-color: #fda898;">Add More Food</a>
+          </form>
       </div>
+      <div class="flex">
+        <form type="click">
+          <button id="remove-meal" class="btn btn-outline-success btn-lg" style="background-color: #fda898;">Remove Meal</button>
+        </form>
+     
+    </div>
+      <div>
+        <a href="/" class="btn btn-outline-success btn-lg" style="background-color: #fda898;">Home</i></a>
+      </div>
+      
+      
       {% else %}
       <div class="jumbotron my-4">
         <div class="container">
-          <h1 class="display-4 text-danger text-center"> Sorry, you do not have any ingredient!
-            <a href="/" class="neon btn btn-outline-warning btn-lg m-2">Home</a>    
-          </h1> 
+          <h1 class="display-4 text-danger text-center"> Sorry, you do not have any food in here!
+            <a href="/" class="btn btn-outline-success btn-lg" style="background-color: #fda898;">Home</a>
+          </h1>
         </div>
       </div>
     {% endif %}

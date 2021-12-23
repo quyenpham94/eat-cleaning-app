@@ -153,12 +153,7 @@ def home_page():
 
 @app.route("/search")
 def search_ingredient():
-    # query = request.args.get('query', "")
-    # cuisine = request.args.get('cuisine', "")
-    # diet = request.args.get('diet', "")
-    # offset = request.args.get('offset')
-    # number = 8
-    
+
     query = request.args.get('query',"")
   
     res = requests.get(f"{BASE_URL}/food/ingredients/search", params={ "apiKey": API_KEY, "query":query})
@@ -169,7 +164,6 @@ def search_ingredient():
         flash("Sorry, search limit reached!", "warning")
         render_template("/index.html")
     
-    # path = f"/search?query={query}&cuisine={cuisine}&diet={diet}"
     ingredients = data['results']
     if g.user:
         ingredient_ids = [r['id'] for r in ingredients]
@@ -183,16 +177,21 @@ def search_ingredient():
 
 @app.route("/ingredients/<int:id>")
 def show_ingredient(id):
-    res = requests.get(f"{BASE_URL}/food/ingredients/{id}/information", params={ "apiKey": API_KEY })
-    data = res.json()
-    return render_template("foods/ingredients.html", ingredients=data)
+    res1 = requests.get(f"{BASE_URL}/recipes/{id}/nutritionWidget.json", params={ "apiKey": API_KEY })
+    data1 = res1.json()
+    res2 = requests.get(f"{BASE_URL}/food/ingredients/{id}/information", params={ "apiKey": API_KEY, "amount":1 })
+    data2 = res2.json()
+    name = data2['name']
+    return render_template("foods/ingredients.html", nutrition=data1, name=name)
 
 @app.route("/meals")
 def meal_page():
     """Show User's meal."""
+    
     if not g.user:
         flash('You must be logged in first','danger')
         return redirect("/login")
+    
     user_response = g.user.ingredients
     ingredient_ids = [r.id for r in user_response]
 
@@ -222,30 +221,13 @@ def add_meal(id):
 
     return jsonify(ingredient=ingredient.serialize())
 
-# def add_ingredients_from_api_response(ingredient):
-#     """Add ingredients to the meal."""
-
-#     id = ingredient.get('id', "")
-#     name = ingredient.get('name', "")
-
-#     meal = Ingredient(id=id, name=name)
-#     try:
-#         db.session.add(meal)
-#         db.session.commit()
-
-#     except Exception:
-#         db.session.rollback()
-#         print("Exception", str(Exception))
-#         return "Sorry, Error, Please try again later", str(Exception)
-#     return meal
-
 
 @app.route("/random")
 def show_recipes():
     """Show random recipes auto populated"""
-    res = requests.get(f"{BASE_URL}/recipes/random", params={ "apiKey": API_KEY, "number": 8 })
+    res = requests.get(f"{BASE_URL}/recipes/random", params={ "apiKey": API_KEY, "number": 9 })
     data = res.json()
-   
+
     if data.get('recipes') == 0:
         flash("Sorry, search limit reached!", "warning")
         return render_template("index.html")
@@ -268,7 +250,7 @@ def search_recipe():
     maxFat = request.args.get('maxFat',"")
     maxCalories = request.args.get('maxCalories', "")
     offset = request.args.get('offset')
-    number = 8
+    number = 9
    
     
     res = requests.get(f"{BASE_URL}/recipes/complexSearch", params={ "apiKey": API_KEY, "diet": diet, "maxFat": maxFat, "maxCalories": maxCalories, "number": number, "offset": offset})

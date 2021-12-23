@@ -2,15 +2,15 @@
 {% block title %}Random Choice{% endblock %}
 {% block content %}
 
-<div class="container">
+<div class="container row justify-content-center align-items-center mt-3">
     {% if recipes %}
-    <div id="recipe-info" class="row mt-2">
+    <div id="recipe-info" class="row">
         <div class="container">
             <h1>Some Random Recipes</h1>
         </div>
     </div>
     <div id="card">
-        <h5>Refine Your Search By Calories</h5>
+        <h5>Refine Your Search By Diet and Nutrition</h5>
             <form id="card" action="/refine" role="refine">
                 <select class="select" name="diet" id="diet">
                     <option selected>
@@ -37,21 +37,22 @@
                     </option>
                 </select>
                 <div>
-                    <button class="btn btn-outline-info btn-lg" type="submit">Refine</button>
-                    <a href="/" class="btn btn-outline-info btn-lg">Home</a>
+                    <button class="btn btn-outline-success btn-lg" style="background-color:#fda898;" type="submit">Refine</button>
+                    <a href="/" class="btn btn-outline-success btn-lg" style="background-color:#fda898;">Home</a>
                 </div>
             </form>
     </div>
     {% for r in recipes %}
-        <div class="jumbotron1 col-3 col-sm-10-6 m-2">
+        <div class="card border col-3 justify-content-center align-items-center mb-4 mx-auto" style="background-color: #fef6f4;">
             <a href="/recipes/{{r.id}}" data-id="{{r.id}}" class="show-recipe">
-                <div>
+                <div class="vertical-group">
                     <img src="{{r.image}}" class="card-img-top" alt="{{r.name}}">
                         <div class="card-body recipe-info">
                             <h5 class="text-danger text-center card-title">{{r['title']}}</h5></a>
                                 <div class="card-body">
-                                    <p class="card-text text-right">Total cook time: {{r.readyInminutes}} minutes</p>
+                                    <p class="card-text text-right">Total cook time: {{r.readyInMinutes}} minutes</p>
                                     <p class="card-text text-right">Serves: {{r.servings}} </p>
+                                    
                                 </div>
                                 {% if g.user %}
                                 <button data-id="{{r.id}}" class='fav btn btn-sm'>

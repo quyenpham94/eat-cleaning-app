@@ -8,9 +8,9 @@
     <form type="submit">
         <div class="autocomplete suggestions">
 
-            <input data-autocomplete list="food-suggestion" class="form-control" type="text" name="query" placeholder="Search Ingredient">
+            <input data-autocomplete list="food-suggestion" class="form-control" type="text" name="query" placeholder="Type Ingredient (eg. carrots, spinach, etc.)">
 
-            <button class="btn btn-outline-success" type="submit" >Search</button>
+            <button class="btn btn-outline-success btn-lg" style="background-color:#fda898;" type="submit" >Search</button>
         </div> 
     </form>
         
@@ -21,8 +21,9 @@
                 <a href="/ingredients/{{i.id}}" data-id="{{i.id}}" class="show-ingredient">
                     <div>
                         <div class="card-body meal-info text-center">
-                            <div class="card-body border">
+                            <div class="card-body border" style="background-color: #fef6f4;">
                                 <p class="ingredient-name">{{ i.name }}</p>
+                                <p>Calories: {{calories}} </p>
                               
                                 {% if g.user %}
                                 <button data-id="{{i.id}}" class='fav btn btn-sm border'>
@@ -40,17 +41,12 @@
 
    
 
-<div class="today-meal border-0">
-    <h5 class="card-title text-info">Today's Meal</h5>
-    <div id="food-list">
 
-    </div>
+<div class="container">
+    <a href="/meals" class="btn btn-outline-success btn-lg" style="background-color:#fda898;">Your Meal</a>
 </div>
 <div class="container">
-    <a href="/meals" class="neon btn btn-outline-warning btn-lg m-2">Your Meal</a>
-</div>
-<div class="container">
-    <a href="/" class="neon btn btn-outline-warning btn-lg m-2">Home</i></a>  
+    <a href="/" class="btn btn-outline-success btn-lg" style="background-color:#fda898;">Home</i></a>  
 </div>
 
 {% endblock %}

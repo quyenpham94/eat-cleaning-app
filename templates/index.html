@@ -2,35 +2,37 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<h1>Welcome To Eat Cleaning App</h1>
-<div class="container">
-    <form action="/search">
-        <button class="btn btn-outline-warning btn-lg">Search Ingredient</button>
-    </form>
 
-</div>
-<div class="container">
-    <form action="/favorites">
-        <button class="btn btn-outline-warning btn-lg">My Favorites</button>
-    </form>
+    <h1>Welcome To Eat Cleaning App</h1>
+    <div class="container" >
+        <form action="/search">
+            <button class="btn-outline-success btn-lg" style="background-color: #fda898;">Search Ingredient</button>
+        </form>
+    
+    </div>
+    <div class="container">
+        <form action="/favorites">
+            <button class="btn-outline-success btn-lg" style="background-color: #fda898;">My Favorites</button>
+        </form>
+    
+    </div>
+    <div class="container">
+        <form action="/random">
+            <button class="btn-outline-success btn-lg" style="background-color: #fda898;">Random Recipes</button>
+        </form>
+    
+    </div>
+    <div class="container">
+        <form action="/random">
+            <button class="btn-outline-success btn-lg" style="background-color: #fda898;">Refine Recipes</button>
+        </form>
+    
+    </div>
+    <div class="container">
+        <form action="/meals">
+            <button class="btn-outline-success btn-lg" style="background-color: #fda898;">My Meal</button>
+        </form>
+    
+    </div>
 
-</div>
-<div class="container">
-    <form action="/random">
-        <button class="btn btn-outline-warning btn-lg">Random Recipes</button>
-    </form>
-
-</div>
-<div class="container">
-    <form action="/random">
-        <button class="btn btn-outline-warning btn-lg">Refine Recipes</button>
-    </form>
-
-</div>
-<div class="container">
-    <form action="/meals">
-        <button class="btn btn-outline-warning btn-lg">My Meal</button>
-    </form>
-
-</div>
 {% endblock %}

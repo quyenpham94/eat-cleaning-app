@@ -46,7 +46,7 @@
         <a href="/recipes/{{r.id}}" data-id="{{r.id}}" class="show-recipe">
             <div class="card border">
                 <img src="{{r.image}}" class="card-img-top" alt="{{r.name}}">
-                <div class="card-body">
+                <div class="card-body py-1">
                     <h5>{{r['title']}}</h5></a>
                     {% if g.user %}
                     <button data-id="{{r.id}}" class="fav btn btn-sm">
