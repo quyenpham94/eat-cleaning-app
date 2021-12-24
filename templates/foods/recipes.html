@@ -44,7 +44,7 @@
     {% for r in recipes %}
     <div class="jumbotron1 col-3 col-sm-10-6 m-2">
         <a href="/recipes/{{r.id}}" data-id="{{r.id}}" class="show-recipe">
-            <div class="card border">
+            <div class="card border recipe-info" style="background-color: #fef6f4;">
                 <img src="{{r.image}}" class="card-img-top" alt="{{r.name}}">
                 <div class="card-body py-1">
                     <h5>{{r['title']}}</h5></a>

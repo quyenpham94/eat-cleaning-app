@@ -302,9 +302,11 @@ def add_favorite(id):
 
     recipe = Recipe.query.filter_by(id=id).first()
     if not recipe:
-        res = requests.get(f"{BASE_URL}/recipes/{id}/information", params={ "apiKey": API_KEY, "includeNutrition": False })
+        res = requests.get(f"{BASE_URL}/recipes/{id}/information", params={ "apiKey": API_KEY, "includeNutrition": True })
         data = res.json()
         recipe = add_recipe_from_api_response(data)
+        
+
 
         g.user.recipes.append(recipe)
         db.session.commit()
@@ -314,6 +316,22 @@ def add_favorite(id):
         
     return jsonify(recipe=recipe.serialize())
 
+@app.route("/api/favorite/<int:id>", methods=["DELETE"])
+def delete_favorite(id):
+    """Unfavorite a recipe."""
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+    recipe = Recipe.query.filter_by(id=id).first()
+
+    try:
+        db.session.delete(recipe)
+        db.session.commit()
+        
+    except Exception as e:
+        print("Error", e)
+        return jsonify(errors=str(e))
+    return jsonify(recipe=recipe.serialize())
 
 @app.errorhandler(404)
 def error_page(error):

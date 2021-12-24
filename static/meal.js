@@ -14,7 +14,7 @@ $(document).ready(function(){
 		console.log(id)
 	
 		if (event.target.classList.contains('fas')) {
-			await axios.remove(`/api/meal/${id}`)
+			await axios.delete(`/api/meal/${id}`)
 			$(event.target).toggleClass('fas fa-heart')
 			$(event.target).toggleClass('far fa-heart')
 			console.log('Delete Ingredient From Meal')
