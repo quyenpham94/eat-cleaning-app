@@ -1,10 +1,10 @@
 import os
 from flask import Flask, render_template, redirect, session, flash, request, jsonify, g
-from models import connect_db, db, User, Ingredient, Meal, Recipe
+from models import connect_db, db, User, Ingredient, Meal, Recipe, Favorite
 from sqlalchemy.exc import IntegrityError
 from forms import UserForm, LoginForm, UserEditForm
 import requests
-from helper import do_logout, add_ingredients_from_api_response, add_recipe_from_api_response, diets, maxFats, maxCalorieses
+from helper import do_logout, add_ingredients_from_api_response, add_recipe_from_api_response, diets, maxFats, maxCalorieses, delete_favorite_recipe
 
 CURR_USER_KEY = "user_id"
  
@@ -18,7 +18,7 @@ app.config['SQLALCHEMY_ECHO'] = False
 
 
 BASE_URL = "https://api.spoonacular.com/"
-API_KEY = ""
+API_KEY = "7661a2feb8364ca09a645444d3ed9189"
 
 
 connect_db(app)
@@ -316,22 +316,19 @@ def add_favorite(id):
         
     return jsonify(recipe=recipe.serialize())
 
-@app.route("/api/favorite/<int:id>", methods=["DELETE"])
+@app.route("/api/favorite/<int:id>", methods=["POST"])
 def delete_favorite(id):
     """Unfavorite a recipe."""
     if not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/")
-    recipe = Recipe.query.filter_by(id=id).first()
-
-    try:
-        db.session.delete(recipe)
-        db.session.commit()
-        
-    except Exception as e:
-        print("Error", e)
-        return jsonify(errors=str(e))
-    return jsonify(recipe=recipe.serialize())
+    favorite = Favorite.query.get_or_404(id)
+    
+    db.session.delete(favorite)
+    db.session.commit()
+    # session.pop(CURR_USER_KEY)
+    flash(f"recipe has been deleted", 'secondary')
+    return redirect("/favorite.html")
 
 @app.errorhandler(404)
 def error_page(error):

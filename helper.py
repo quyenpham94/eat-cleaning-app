@@ -55,3 +55,23 @@ def add_recipe_from_api_response(recipe):
         print("Exception", str(Exception))
         return "Sorry, Error, Please try again later", str(Exception)
     return favorite
+
+def delete_favorite_recipe(recipe):
+    id = recipe.get('id', None)
+    title = recipe.get('title', None)
+    image = recipe.get('image', None)
+    readyInMinutes = recipe.get('readyInMinutes', None)
+    servings = recipe.get('servings', None)
+    sourceName = recipe.get('sourceName', None)
+    sourceUrl = recipe.get('sourceUrl', None)
+    
+    favorite = Recipe(id=id, title=title, image=image, readyInMinutes=readyInMinutes, sourceName=sourceName, sourceUrl=sourceUrl, servings=servings)
+    try:
+        db.session.delete(favorite)
+        db.session.commit()
+
+    except Exception:
+        db.session.rollback()
+        print("Exception", str(Exception))
+        return "Sorry, Error, Please try again later", str(Exception)
+    return favorite
