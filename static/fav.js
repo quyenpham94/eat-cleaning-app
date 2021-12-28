@@ -11,7 +11,7 @@ $(document).ready(function(){
 		console.log(id)
 	
 		if (e.target.classList.contains('fas')) {
-			await axios.post(`/api/favorite/${id}`)
+			await axios.delete(`/api/favorite/${id}`)
 			$(e.target).toggleClass('fas fa-heart')
 			$(e.target).toggleClass('far fa-heart')
 			console.log('Delete Unfavorite Recipe')

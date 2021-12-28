@@ -18,7 +18,7 @@ app.config['SQLALCHEMY_ECHO'] = False
 
 
 BASE_URL = "https://api.spoonacular.com/"
-API_KEY = "7661a2feb8364ca09a645444d3ed9189"
+API_KEY = ""
 
 
 connect_db(app)
@@ -316,19 +316,18 @@ def add_favorite(id):
         
     return jsonify(recipe=recipe.serialize())
 
-@app.route("/api/favorite/<int:id>", methods=["POST"])
+@app.route("/api/favorite/<int:id>", methods=["DELETE"])
 def delete_favorite(id):
     """Unfavorite a recipe."""
     if not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/")
-    favorite = Favorite.query.get_or_404(id)
+    favorite = Favorite.query.filter_by(recipe_id=id, user_id=g.user.id).first()
     
     db.session.delete(favorite)
     db.session.commit()
-    # session.pop(CURR_USER_KEY)
     flash(f"recipe has been deleted", 'secondary')
-    return redirect("/favorite.html")
+    return redirect("/api/favorite")
 
 @app.errorhandler(404)
 def error_page(error):
