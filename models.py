@@ -173,14 +173,4 @@ class Favorite(db.Model):
     def __repr__(self):
         return f'<Favorite= user_id:{self.user_id} recipe_id:{self.recipe_id}>'
     
-    def serialize(self):
-        """Returns a dict representation of recipes which we can turn into JSON"""
-        return {
-            'id': self.id,
-            'title': self.title,
-            'img_url': self.image,
-            'prep_time': self.readyInMinutes,
-            'serves': self.servings,
-            'source_name': self.sourceName,
-            'source_url': self.sourceUrl
-        }    
+    

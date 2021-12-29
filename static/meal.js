@@ -13,16 +13,16 @@ $(document).ready(function(){
 		const id = $(event.target).parent().data('id')
 		console.log(id)
 	
-		if (event.target.classList.contains('fas')) {
+		if (event.target.classList.contains('fa-plus')) {
 			await axios.delete(`/api/meal/${id}`)
-			$(event.target).toggleClass('fas fa-heart')
-			$(event.target).toggleClass('far fa-heart')
+			$(event.target).toggleClass('fa fa-minus')
+			$(event.target).toggleClass('fa fa-plus')
 			console.log('Delete Ingredient From Meal')
 		} else {
 			try {
 				await axios.post(`/api/meal/${id}`, (data = { id: id }))
-				$(event.target).toggleClass('fas fa-heart')
-				$(event.target).toggleClass('far fa-heart')
+				$(event.target).toggleClass('fa fa-minus')
+				$(event.target).toggleClass('fa fa-plus')
 				console.log('Add Ingredient To Meal')
 			} catch (err) {
 				console.log('Login Required', err)

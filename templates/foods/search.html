@@ -27,7 +27,7 @@
                               
                                 {% if g.user %}
                                 <button data-id="{{i.id}}" class='meal btn btn-sm border'>
-                                    <i class="{% if i.id in ingredient_ids %}far fa-heart fa-2x{% else %}fas fa-heart fa-2x{% endif %}"></i>
+                                    <i class="{% if i.id in ingredient_ids %}fa fa-plus fa-2x{% else %}fa fa-minus fa-2x{% endif %}"></i>
                                 </button>
                                 {% endif %}
                             </div>

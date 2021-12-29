@@ -4,7 +4,7 @@ from models import connect_db, db, User, Ingredient, Meal, Recipe, Favorite
 from sqlalchemy.exc import IntegrityError
 from forms import UserForm, LoginForm, UserEditForm
 import requests
-from helper import do_logout, add_ingredients_from_api_response, add_recipe_from_api_response, diets, maxFats, maxCalorieses, delete_favorite_recipe
+from helper import do_logout, add_ingredients_from_api_response, add_recipe_from_api_response, diets, maxFats, maxCalorieses
 
 CURR_USER_KEY = "user_id"
  
@@ -192,8 +192,13 @@ def meal_page():
         flash('You must be logged in first','danger')
         return redirect("/login")
     
+
+
     user_response = g.user.ingredients
     ingredient_ids = [r.id for r in user_response]
+    
+    # res = requests.get(f"{BASE_URL}/recipes/{ingredient_ids}/nutritionWidget.json", params={ "apiKey": API_KEY })
+    # data = res.json()
 
     return render_template("/foods/meals.html", ingredient_ids=ingredient_ids)
 
