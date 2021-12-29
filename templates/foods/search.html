@@ -22,18 +22,18 @@
                     <div>
                         <div class="card-body meal-info text-center">
                             <div class="card-body border" style="background-color: #fef6f4;">
-                                <p class="ingredient-name">{{ i.name }}</p>
+                                <p class="ingredient-name">{{ i.name }}</p> </a> 
                                 <p>Calories: {{calories}} </p>
                               
                                 {% if g.user %}
-                                <button data-id="{{i.id}}" class='fav btn btn-sm border'>
+                                <button data-id="{{i.id}}" class='meal btn btn-sm border'>
                                     <i class="{% if i.id in ingredient_ids %}far fa-heart fa-2x{% else %}fas fa-heart fa-2x{% endif %}"></i>
                                 </button>
                                 {% endif %}
                             </div>
                         </div>
                     </div>
-                </a> 
+               
         </div>
             
     {% endfor %}

@@ -221,6 +221,18 @@ def add_meal(id):
 
     return jsonify(ingredient=ingredient.serialize())
 
+@app.route("/api/meal/<int:id>", methods=["DELETE"])
+def delete_ingredient(id):
+    """Delete ingredient."""
+    if not g.user:
+        flash("Access unauthorized","danger")
+        return redirect("/")
+    
+    meal = Meal.query.filter_by(ingredient_id=id, user_id=g.user.id).first()
+    db.session.delete(meal)
+    db.session.commit()
+    flash(f"ingredient has been removed from your meal", 'secondary')
+    return redirect("/api/meal")
 
 @app.route("/random")
 def show_recipes():

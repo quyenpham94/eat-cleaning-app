@@ -8,8 +8,8 @@ $(document).ready(function(){
 	const addLikeBtn = $('.fav')
    
 
-	mealInfo.on('click', '.fav', async function(event){
-        event.preventDefault();
+	mealInfo.on('click', '.meal', async function(event){
+        
 		const id = $(event.target).parent().data('id')
 		console.log(id)
 	
